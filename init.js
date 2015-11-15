@@ -17,7 +17,8 @@ module.exports = {
         }
 
         return generateLintPromise(filePath, fileContent).catch(function (err) {
-          atom.notifications.addError('Something bad happened', {
+          return atom.notifications.addError('Something bad happened', {
+            error: err,
             detail: err.stack,
             dismissable: true
           })
