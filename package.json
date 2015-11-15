@@ -1,7 +1,7 @@
 {
   "name": "linter-js-standard-engine",
   "version": "0.0.0",
-  "description": "",
+  "description": "Linter plugin for Standard Engine based linters.",
   "main": "init.js",
   "repository": "https://github.com/gustavnikolaj/linter-js-standard-engine.git",
   "author": "Gustav Nikolaj <gustavnikolaj@gmail.com>",
