@@ -6,7 +6,6 @@ var textEditorFactory = require('./util/textEditorFactory')
 var linter = plugin.provideLinter()
 var lint = linter.lint.bind(linter)
 
-
 describe('linter-js-standard-engine', function () {
   it('should be able to lint a test file', function () {
     var textEditor = textEditorFactory('var foo = "bar"')
