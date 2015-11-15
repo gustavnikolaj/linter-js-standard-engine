@@ -1,6 +1,10 @@
 var generateLintPromise = require('./lib/generateLintPromise')
+var cleanLinters = require('./lib/getLinter').cleanLinters
 
 module.exports = {
+  deactivate: function () {
+    cleanLinters()
+  },
   provideLinter: function () {
     return {
       name: 'lint',
