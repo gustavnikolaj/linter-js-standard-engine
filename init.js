@@ -1,6 +1,9 @@
-var findLinter = require('./lib/findLinter')
+var findOptions = require('./lib/findOptions')
+var getLinter = require('./lib/getLinter')
 var lint = require('./lib/lint')
 var cleanLinters = require('./lib/getLinter').cleanLinters
+var minimatch = require('minimatch')
+var path = require('path')
 
 module.exports = {
   deactivate: function () {
@@ -21,14 +24,32 @@ module.exports = {
           return []
         }
 
-        return findLinter(filePath)
-          .then(lint(filePath, fileContent))
-          .catch(function (err) {
-            return atom.notifications.addError('Something bad happened', {
-              error: err,
-              detail: err.stack,
-              dismissable: true
+        return findOptions(filePath)
+          .then(function (options) {
+            var ignoreGlobs = options.options && options.options.ignore || []
+            var fileIsIgnored = ignoreGlobs.some(function (pattern) {
+              var relativePath = path.relative(options.projectRoot, filePath)
+              return minimatch(relativePath, pattern)
             })
+            if (fileIsIgnored) {
+              return [] // No errors
+            }
+            return getLinter(options.pathToLinter)
+              .then(lint(filePath, fileContent))
+          })
+          .catch(function (err) {
+            var suppressedErrorMessages = [
+              'no supported linter found',
+              'no package.json found'
+            ]
+            if (suppressedErrorMessages.indexOf(err.message) !== -1) {
+              atom.notifications.addError('Something bad happened', {
+                error: err,
+                detail: err.stack,
+                dismissable: true
+              })
+            }
+            return []
           })
       }
     }

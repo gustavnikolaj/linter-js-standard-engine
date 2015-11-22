@@ -1,6 +1,7 @@
 /* global describe, it */
 
 var expect = require('unexpected').clone()
+var path = require('path')
 var plugin = require('../init')
 var textEditorFactory = require('./util/textEditorFactory')
 var linter = plugin.provideLinter()
@@ -18,9 +19,17 @@ expect.addAssertion('to be a valid lint report', function (expect, subject) {
 describe('linter-js-standard-engine', function () {
   it('should be able to lint a test file', function () {
     var textEditor = textEditorFactory('var foo = "bar"')
-    console.log(textEditor.getPath())
     return expect(lint(textEditor), 'to be fulfilled').then(function (data) {
       return expect(data, 'to be a valid lint report')
+    })
+  })
+  it('should be able to lint a test file', function () {
+    var textEditor = textEditorFactory({
+      source: 'var foo = "bar"',
+      path: path.resolve(__dirname, 'fixtures', 'faked', 'foo.js')
+    })
+    return expect(lint(textEditor), 'to be fulfilled').then(function (data) {
+      return expect(data, 'to be empty')
     })
   })
 })
