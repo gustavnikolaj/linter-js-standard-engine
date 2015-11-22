@@ -19,7 +19,6 @@ expect.addAssertion('to be a valid lint report', function (expect, subject) {
 describe('linter-js-standard-engine', function () {
   it('should be able to lint a test file', function () {
     var textEditor = textEditorFactory('var foo = "bar"')
-    console.log(textEditor.getPath())
     return expect(lint(textEditor), 'to be fulfilled').then(function (data) {
       return expect(data, 'to be a valid lint report')
     })
