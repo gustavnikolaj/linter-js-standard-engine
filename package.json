@@ -9,6 +9,9 @@
   "bugs": {
     "url": "https://github.com/gustavnikolaj/linter-js-standard-engine/issues"
   },
+  "engines": {
+    "atom": ">=1.0.0"
+  },
   "scripts": {
     "test": "mocha",
     "coverage": "istanbul cover --include-all-sources _mocha"
