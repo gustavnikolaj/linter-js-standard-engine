@@ -10,6 +10,7 @@
     "url": "https://github.com/gustavnikolaj/linter-js-standard-engine/issues"
   },
   "scripts": {
+    "test": "mocha",
     "coverage": "istanbul cover --include-all-sources _mocha"
   },
   "homepage": "https://github.com/gustavnikolaj/linter-js-standard-engine#readme",
