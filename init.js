@@ -2,6 +2,8 @@ var findOptions = require('./lib/findOptions')
 var getLinter = require('./lib/getLinter')
 var lint = require('./lib/lint')
 var cleanLinters = require('./lib/getLinter').cleanLinters
+var minimatch = require('minimatch')
+var path = require('path')
 
 module.exports = {
   deactivate: function () {
@@ -24,6 +26,13 @@ module.exports = {
 
         return findOptions(filePath)
           .then(function (options) {
+            if (options.options && options.options.ignore && options.options.ignore.some(function (pattern) {
+              var relativePath = path.relative(options.projectRoot, filePath)
+              console.log('matching', relativePath, pattern, minimatch(relativePath, pattern))
+              return minimatch(relativePath, pattern)
+            })) {
+              return [] // No errors
+            }
             return getLinter(options.pathToLinter)
               .then(lint(filePath, fileContent))
           })

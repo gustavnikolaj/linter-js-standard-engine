@@ -20,6 +20,9 @@
   "standard": {
     "globals": [
       "atom"
+    ],
+    "ignore": [
+      "test/fixtures/faked/*.js"
     ]
   },
   "providedServices": {
@@ -30,6 +33,7 @@
     }
   },
   "dependencies": {
-    "lru-cache": "2.7.0"
+    "lru-cache": "2.7.0",
+    "minimatch": "3.0.0"
   }
 }
