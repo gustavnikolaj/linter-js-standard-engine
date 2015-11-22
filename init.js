@@ -1,4 +1,5 @@
-var findLinter = require('./lib/findLinter')
+var findOptions = require('./lib/findOptions')
+var getLinter = require('./lib/getLinter')
 var lint = require('./lib/lint')
 var cleanLinters = require('./lib/getLinter').cleanLinters
 
@@ -21,8 +22,11 @@ module.exports = {
           return []
         }
 
-        return findLinter(filePath)
-          .then(lint(filePath, fileContent))
+        return findOptions(filePath)
+          .then(function (options) {
+            return getLinter(options.pathToLinter)
+              .then(lint(filePath, fileContent))
+          })
           .catch(function (err) {
             return atom.notifications.addError('Something bad happened', {
               error: err,
