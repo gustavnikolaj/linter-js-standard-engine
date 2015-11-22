@@ -42,7 +42,7 @@ module.exports = {
               'no supported linter found',
               'no package.json found'
             ]
-            if (suppressedErrorMessages.indexOf(err.message) !== -1) {
+            if (suppressedErrorMessages.indexOf(err.message) === -1) {
               atom.notifications.addError('Something bad happened', {
                 error: err,
                 detail: err.stack,
