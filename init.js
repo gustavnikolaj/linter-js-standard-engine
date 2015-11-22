@@ -28,7 +28,6 @@ module.exports = {
           .then(function (options) {
             if (options.options && options.options.ignore && options.options.ignore.some(function (pattern) {
               var relativePath = path.relative(options.projectRoot, filePath)
-              console.log('matching', relativePath, pattern, minimatch(relativePath, pattern))
               return minimatch(relativePath, pattern)
             })) {
               return [] // No errors
