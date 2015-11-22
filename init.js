@@ -26,10 +26,12 @@ module.exports = {
 
         return findOptions(filePath)
           .then(function (options) {
-            if (options.options && options.options.ignore && options.options.ignore.some(function (pattern) {
+            var ignoreGlobs = options.options && options.options.ignore || []
+            var fileIsIgnored = ignoreGlobs.some(function (pattern) {
               var relativePath = path.relative(options.projectRoot, filePath)
               return minimatch(relativePath, pattern)
-            })) {
+            })
+            if (fileIsIgnored) {
               return [] // No errors
             }
             return getLinter(options.pathToLinter)
