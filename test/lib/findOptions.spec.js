@@ -38,4 +38,28 @@ describe('lib/findOptions', function () {
       })
     }, 'with fs mocked out', mockedFileSystem, 'not to error')
   })
+  it('should be able to find a devDependency', function () {
+    return expect(function () {
+      return expect(
+        findOptions('/ljse-fixtures/some-module/index.js'),
+        'to be fulfilled'
+      ).then(function (options) {
+        return expect(options, 'to satisfy', {
+          linter: 'semistandard',
+          pathToLinter: /node_modules\/semistandard$/,
+          options: {}
+        })
+      })
+    }, 'with fs mocked out', {
+      '/ljse-fixtures/some-module': {
+        'package.json': JSON.stringify({
+          name: 'some-module',
+          devDependencies: {
+            'semistandard': '1.0.0'
+          }
+        }),
+        'index.js': 'module.exports = "foo!";'
+      }
+    }, 'not to error')
+  })
 })
