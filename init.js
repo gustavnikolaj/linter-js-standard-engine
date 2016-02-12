@@ -6,6 +6,23 @@ var minimatch = require('minimatch')
 var path = require('path')
 
 module.exports = {
+  config: {
+    engine: {
+      title: 'Linting engine',
+      description: 'Which Standard Style engine to use. Choose "custom" to provide your own below. The default, "auto-detect", looks at your package.json to find a compatible linter from this list.',
+      type: 'string',
+      default: 'auto-detect',
+      enum: ['auto-detect', 'standard', 'semistandard', 'happiness', 'onelint', 'uber-standard', 'custom...'],
+      order: 1
+    },
+    customEngine: {
+      title: 'Custom linting engine',
+      description: 'Which "custom" engine (select above)  to use. Use the name of the package, e.g. "doublestandard" (without the quotes).',
+      type: 'string',
+      default: '',
+      order: 2
+    }
+  },
   deactivate: function () {
     cleanLinters()
   },
@@ -42,7 +59,12 @@ module.exports = {
               'no supported linter found',
               'no package.json found'
             ]
-            if (suppressedErrorMessages.indexOf(err.message) === -1) {
+            if (/linter.*not found/.test(err.message)) {
+              atom.notifications.addWarning(err.message, {
+                dismissable: true
+              })
+            }
+            else if (suppressedErrorMessages.indexOf(err.message) === -1) {
               atom.notifications.addError('Something bad happened', {
                 error: err,
                 detail: err.stack,
