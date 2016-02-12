@@ -59,12 +59,22 @@ module.exports = {
               'no supported linter found',
               'no package.json found'
             ]
-            if (/linter.*not found/.test(err.message)) {
-              atom.notifications.addWarning(err.message, {
-                dismissable: true
-              })
+            if (suppressedErrorMessages.indexOf(err.message) !== -1) {
+              return []
             }
-            else if (suppressedErrorMessages.indexOf(err.message) === -1) {
+            var warnings = [
+              /incompatible linter/,
+              /linter.*not found/
+            ]
+            var isWarning = warnings.some(function (warning) {
+              if (warning.test(err.message)) {
+                atom.notifications.addWarning(err.message, {
+                  dismissable: true
+                })
+                return true
+              }
+            })
+            if (!isWarning) {
               atom.notifications.addError('Something bad happened', {
                 error: err,
                 detail: err.stack,
