@@ -11,7 +11,7 @@ describe('lib/findOptions', function () {
     return expect(findOptions(__filename), 'to be fulfilled').then(function (options) {
       return expect(options, 'to satisfy', {
         linter: 'standard',
-        pathToLinter: /node_modules\/standard$/,
+        pathToLinter: require.resolve('standard'),
         options: {
           globals: [ 'atom' ]
         }
@@ -30,7 +30,7 @@ describe('lib/findOptions', function () {
       return expect(findOptions(fileName), 'to be fulfilled').then(function (options) {
         return expect(options, 'to satisfy', {
           linter: 'standard',
-          pathToLinter: /node_modules\/standard$/,
+          pathToLinter: require.resolve('standard'),
           options: {
             globals: [ 'atom' ]
           }
