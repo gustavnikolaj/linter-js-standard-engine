@@ -10,7 +10,7 @@ describe('lib/lint.js', function () {
   it('should forward errors from the linters lintText() method', function () {
     var lint = lintFactory('/filePath', 'var foo = bar')
     var linterMock = {
-      lintText: function (fileContent, cb) {
+      lintText: function (fileContent, opts, cb) {
         return cb(new Error('MockError'))
       }
     }
@@ -21,7 +21,7 @@ describe('lib/lint.js', function () {
   it('should convert error strings from the linters lintText() method', () => {
     const lint = lintFactory('/filePath', 'var foo = bar')
     const linterMock = {
-      lintText: function (fileContent, cb) {
+      lintText: function (fileContent, opts, cb) {
         return cb('error string')
       }
     }
@@ -32,7 +32,7 @@ describe('lib/lint.js', function () {
   it('should fail upon receiving an invalid report from the linters lintText() method', () => {
     const lint = lintFactory('/filePath', 'var foo = bar')
     const linterMock = {
-      lintText: function (fileContent, cb) {
+      lintText: function (fileContent, opts, cb) {
         return cb(null)
       }
     }
@@ -43,7 +43,7 @@ describe('lib/lint.js', function () {
   it('should convert a eslint report to an atom report', function () {
     var lint = lintFactory('/filePath', 'var foo = bar')
     var linterMock = {
-      lintText: function (fileContent, cb) {
+      lintText: function (fileContent, opts, cb) {
         var output = {
           results: [
             {

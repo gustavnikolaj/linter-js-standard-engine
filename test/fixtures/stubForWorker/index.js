@@ -5,7 +5,7 @@ delete require.cache[module.id]
 // text it'll receive a conut of 1, not 2.
 let count = 0
 
-exports.lintText = (source, cb) => {
+exports.lintText = (source, opts, cb) => {
   count++
   cb(null, { count })
 }
