@@ -12,6 +12,10 @@
   "engines": {
     "atom": ">=1.0.0"
   },
+  "files": [
+    "init.js",
+    "lib"
+  ],
   "scripts": {
     "test": "mocha",
     "coverage": "nyc --all npm test"
