@@ -69,7 +69,7 @@ describe('lib/getLinter', () => {
 
     const promise = linter.then(linter => {
       return new Promise((resolve, reject) => {
-        linter.lintText('', reject)
+        linter.lintText('', {}, reject)
       })
     })
 
