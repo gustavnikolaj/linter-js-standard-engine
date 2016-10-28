@@ -12,18 +12,23 @@
   "engines": {
     "atom": ">=1.0.0"
   },
+  "files": [
+    "init.js",
+    "lib"
+  ],
   "scripts": {
     "test": "mocha",
-    "coverage": "istanbul cover --include-all-sources _mocha"
+    "coverage": "nyc --all npm test"
   },
   "homepage": "https://github.com/gustavnikolaj/linter-js-standard-engine#readme",
   "devDependencies": {
     "debug": "2.2.0",
-    "mocha": "2.3.3",
-    "standard": "5.3.1",
-    "unexpected": "10.1.0",
-    "unexpected-fs": "2.1.3",
-    "when": "3.7.4"
+    "mocha": "^3.1.2",
+    "nyc": "^8.3.2",
+    "standard": "^8.5.0",
+    "unexpected": "^10.18.1",
+    "unexpected-fs": "^2.5.2",
+    "when": "^3.7.7"
   },
   "standard": {
     "globals": [
@@ -41,8 +46,7 @@
     }
   },
   "dependencies": {
-    "istanbul": "0.4.0",
-    "lru-cache": "2.7.0",
-    "minimatch": "3.0.0"
+    "lru-cache": "^4.0.1",
+    "minimatch": "^3.0.3"
   }
 }
