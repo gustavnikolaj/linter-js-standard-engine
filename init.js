@@ -5,6 +5,20 @@ var cleanLinters = require('./lib/getLinter').cleanLinters
 var minimatch = require('minimatch')
 var path = require('path')
 
+function suppressError (err) {
+  return [
+    'no supported linter found',
+    'no package.json found',
+    /^Could not load linter "/
+  ].some(function (pattern) {
+    if (typeof pattern === 'string') {
+      return pattern === err.message
+    } else if (pattern instanceof RegExp) {
+      return pattern.test(err.message)
+    }
+  })
+}
+
 module.exports = {
   deactivate: function () {
     cleanLinters()
@@ -38,12 +52,8 @@ module.exports = {
               .then(lint(filePath, fileContent))
           })
           .catch(function (err) {
-            var suppressedErrorMessages = [
-              'no supported linter found',
-              'no package.json found'
-            ]
-            if (suppressedErrorMessages.indexOf(err.message) === -1) {
-              atom.notifications.addError('Something bad happened', {
+            if (!suppressError(err)) {
+              atom.notifications.addError(err.message || 'Something bad happened', {
                 error: err,
                 detail: err.stack,
                 dismissable: true
