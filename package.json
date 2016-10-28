@@ -17,6 +17,7 @@
     "lib"
   ],
   "scripts": {
+    "lint": "standard",
     "test": "mocha",
     "coverage": "nyc --all npm test"
   },

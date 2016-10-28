@@ -1,3 +1,5 @@
+var path = require('path')
+
 module.exports = function textEditorFactory (input) {
   input = input || {}
   if (typeof input === 'string') {
@@ -10,7 +12,7 @@ module.exports = function textEditorFactory (input) {
       return input.source || ''
     },
     getPath: function () {
-      return input.path || __dirname + '/foo.js' // standard devDep will be found
+      return input.path || path.resolve(__dirname, 'foo.js') // standard devDep will be found
     },
     getGrammar: function () {
       return {
