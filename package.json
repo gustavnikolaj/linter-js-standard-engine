@@ -47,6 +47,7 @@
   },
   "dependencies": {
     "lru-cache": "^4.0.1",
-    "minimatch": "^3.0.3"
+    "minimatch": "^3.0.3",
+    "resolve-from": "^2.0.0"
   }
 }
