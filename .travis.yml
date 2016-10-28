@@ -3,5 +3,4 @@ sudo: false
 node_js:
   - "5.10.0" # Ships with Atom 1.11.2
 script:
-  - npm run lint
   - npm run coverage
