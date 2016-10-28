@@ -34,7 +34,7 @@ module.exports = {
             if (fileIsIgnored) {
               return [] // No errors
             }
-            return getLinter(options.pathToLinter, options.projectRoot)
+            return getLinter(options.linter, options.projectRoot)
               .then(lint(filePath, fileContent))
           })
           .catch(function (err) {

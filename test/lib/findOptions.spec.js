@@ -13,7 +13,6 @@ describe('lib/findOptions', function () {
     return expect(findOptions(__filename), 'to be fulfilled').then(function (options) {
       return expect(options, 'to satisfy', {
         linter: 'standard',
-        pathToLinter: require.resolve('standard'),
         options: {
           globals: [ 'atom' ]
         }
@@ -27,7 +26,6 @@ describe('lib/findOptions', function () {
         return expect(options, 'to equal', {
           projectRoot: fixturesPath('simpleSemiStandard'),
           linter: 'semistandard',
-          pathToLinter: fixturesPath('simpleSemiStandard/node_modules/semistandard/index.js'),
           options: {}
         })
       })
@@ -40,7 +38,6 @@ describe('lib/findOptions', function () {
         return expect(options, 'to equal', {
           projectRoot: fixturesPath('scopedLinter'),
           linter: '@novemberborn/as-i-preach',
-          pathToLinter: fixturesPath('scopedLinter/node_modules/@novemberborn/as-i-preach/index.js'),
           options: {}
         })
       })
