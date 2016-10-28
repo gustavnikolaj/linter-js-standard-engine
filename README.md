@@ -7,26 +7,55 @@ on [`standard-engine`](https://github.com/flet/standard-engine).
 
 There's already another plugin, doing almost the same thing, called
 [`linter-js-standard`](https://github.com/ricardofbarros/linter-js-standard).
-The reason why I chose to roll my own, was that I disagreed with the approach it
-took. The existing tool ships with some of the `standard-engine` based linters
-already installed.
+Unfortunately that plugin bundles its linter implementations, meaning that your
+editor may not be using the same rules as are applied when you run your linter
+via the command line. Instead `linter-js-standard-engine` spawns a child process
+to run your locally installed linter.
 
-Rather than doing that, `linter-js-standard-engine` will look for any linters in
-the list of [supported
-linters](https://github.com/gustavnikolaj/linter-js-standard-engine/blob/master/lib/supportedLinters.js)
-and go look for the nearest `package.json` file, and check if any of those
-linters are in use.
+`linter-js-standard-engine` recognizes the following linters if they're present
+in the `devDependencies` of your `package.json` file:
 
-That allows the plugin to offer a smooth and zero-configuration experience and a
-smaller footprint.
+* `happiness`
+* `onelint`
+* `semistandard`
+* `standard`
+* `uber-standard`
 
-Any configuration you have for your existing linter will be picked up, as the
-plugin will spawn a child process running your linter in a context similar to
-what it would have on the command line.
+For example:
+
+```json
+{
+  "devDependencies": {
+    "standard": "*"
+  }
+}
+```
+
+Additionally you can specify what linter to use using by setting
+`standard-engine` in your `package.json` file:
+
+```json
+{
+  "standard-engine": "@novemberborn/as-i-preach"
+}
+```
+
+The value must be a reference to a Node.js module that implements
+`standard-engine`. The above example is for
+[`@novemberborn/as-i-preach`](https://github.com/novemberborn/as-i-preach).
+
+When set, the `standard-engine` value takes precedence over any other linters
+discovered in the `devDependencies`.
+
+The `package.json` file is discovered by walking up the file system, starting at
+the file being linted. The first `package.json` file found is the one that's
+used. The linter is invoked with its working directory set to the directory the
+`package.json` file is in.
 
 ## License
 
 This module is made public under the ISC License.
 
-See the [LICENSE](https://github.com/gustavnikolaj/linter-js-standard-engine/blob/master/LICENSE)
+See the
+[LICENSE](https://github.com/gustavnikolaj/linter-js-standard-engine/blob/master/LICENSE)
 file for additional details.
