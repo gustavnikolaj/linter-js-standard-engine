@@ -1,0 +1,6 @@
+{
+  "name": "some-module",
+  "devDependencies": {
+    "semistandard": "1.0.0"
+  }
+}

@@ -23,37 +23,47 @@ describe('lib/lint.js', function () {
     var linterMock = {
       lintText: function (fileContent, cb) {
         var output = {
-          results: [ { filePath: '<text>', messages: [
+          results: [
             {
-              ruleId: 'eol-last',
-              severity: 2,
-              message: 'Newline required at end of file but not found.',
-              line: 1,
-              column: 2,
-              nodeType: 'Program',
-              source: 'var foo = "bar"',
-              fix: { range: [15, 15], text: '\n' }
-            },
-            {
-              ruleId: 'no-unused-vars',
-              severity: 2,
-              message: '"foo" is defined but never used',
-              line: 1,
-              column: 5,
-              nodeType: 'Identifier',
-              source: 'var foo = "bar"'
-            },
-            {
-              ruleId: 'quotes',
-              severity: 2,
-              message: 'Strings must use singlequote.',
-              line: 1,
-              column: 11,
-              nodeType: 'Literal',
-              source: 'var foo = "bar"',
-              fix: { range: [10, 15], text: "'bar'" }
+              filePath: '<text>',
+              messages: [
+                {
+                  ruleId: 'eol-last',
+                  severity: 2,
+                  message: 'Newline required at end of file but not found.',
+                  line: 1,
+                  column: 2,
+                  nodeType: 'Program',
+                  source: 'var foo = "bar"',
+                  fix: { range: [15, 15], text: '\n' }
+                },
+                {
+                  ruleId: 'no-unused-vars',
+                  severity: 2,
+                  message: '"foo" is defined but never used',
+                  line: 1,
+                  column: 5,
+                  nodeType: 'Identifier',
+                  source: 'var foo = "bar"'
+                },
+                {
+                  ruleId: 'quotes',
+                  severity: 2,
+                  message: 'Strings must use singlequote.',
+                  line: 1,
+                  column: 11,
+                  nodeType: 'Literal',
+                  source: 'var foo = "bar"',
+                  fix: { range: [10, 15], text: "'bar'" }
+                }
+              ],
+              errorCount: 3,
+              warningCount: 0
             }
-          ], errorCount: 3, warningCount: 0 } ], errorCount: 3, warningCount: 0 }
+          ],
+          errorCount: 3,
+          warningCount: 0
+        }
         return cb(null, output)
       }
     }

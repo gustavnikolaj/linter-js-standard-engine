@@ -17,6 +17,7 @@
     "lib"
   ],
   "scripts": {
+    "lint": "standard",
     "test": "mocha",
     "coverage": "nyc --all npm test"
   },
@@ -27,7 +28,6 @@
     "nyc": "^8.3.2",
     "standard": "^8.5.0",
     "unexpected": "^10.18.1",
-    "unexpected-fs": "^2.5.2",
     "when": "^3.7.7"
   },
   "standard": {
@@ -47,6 +47,7 @@
   },
   "dependencies": {
     "lru-cache": "^4.0.1",
-    "minimatch": "^3.0.3"
+    "minimatch": "^3.0.3",
+    "resolve-from": "^2.0.0"
   }
 }
