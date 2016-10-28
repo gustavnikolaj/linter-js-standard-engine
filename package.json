@@ -10,7 +10,7 @@
     "url": "https://github.com/gustavnikolaj/linter-js-standard-engine/issues"
   },
   "engines": {
-    "atom": ">=1.0.0"
+    "atom": ">=1.11.0"
   },
   "files": [
     "init.js",

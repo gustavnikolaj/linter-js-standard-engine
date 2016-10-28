@@ -1,5 +1,7 @@
 # linter-js-standard-engine
 
+[![Build Status](https://travis-ci.org/gustavnikolaj/linter-js-standard-engine.svg?branch=master)](https://travis-ci.org/gustavnikolaj/linter-js-standard-engine)
+
 A linter for GitHub's [Atom Editor](https://atom.io) using the
 [Linter Plugin](https://github.com/atom-community/linter), for use with the
 [`standard`](https://github.com/feross/standard) linter, and other linters based
