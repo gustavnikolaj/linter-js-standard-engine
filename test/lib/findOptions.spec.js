@@ -39,4 +39,10 @@ describe('lib/findOptions', function () {
       })
     })
   })
+  it('should not select a linter for a project with no linter', function () {
+    var file = fixturesPath('noStandardEngine/index.js')
+    return expect(findOptions(file), 'to be rejected').then(function (msg) {
+      return expect(msg, 'to satisfy', 'no supported linter found')
+    })
+  })
 })
