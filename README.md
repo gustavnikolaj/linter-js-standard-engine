@@ -2,20 +2,20 @@
 
 A linter for GitHub's [Atom Editor](https://atom.io) using the
 [Linter Plugin](https://github.com/atom-community/linter), for use with the
-[standard](https://github.com/feross/standard) linter, and other linters based
-on [standard-engine](https://github.com/flet/standard-engine).
+[`standard`](https://github.com/feross/standard) linter, and other linters based
+on [`standard-engine`](https://github.com/flet/standard-engine).
 
 There's already another plugin, doing almost the same thing, called
-[linter-js-standard](https://github.com/ricardofbarros/linter-js-standard). The
-reason why I chose to roll my own, was that I disagreed with the approach it
-took. The existing tool ships with some of the standard-engine based linters
+[`linter-js-standard`](https://github.com/ricardofbarros/linter-js-standard).
+The reason why I chose to roll my own, was that I disagreed with the approach it
+took. The existing tool ships with some of the `standard-engine` based linters
 already installed.
 
-Rather than doing that, linter-js-standard-engine will look for any linters in
-the list of
-[supported linters](https://github.com/gustavnikolaj/linter-js-standard-engine/blob/master/lib/supportedLinters.js)
-and go look for the nearest package.json file, and check if any of those linters
-are in use.
+Rather than doing that, `linter-js-standard-engine` will look for any linters in
+the list of [supported
+linters](https://github.com/gustavnikolaj/linter-js-standard-engine/blob/master/lib/supportedLinters.js)
+and go look for the nearest `package.json` file, and check if any of those
+linters are in use.
 
 That allows the plugin to offer a smooth and zero-configuration experience and a
 smaller footprint.
