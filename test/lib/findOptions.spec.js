@@ -20,27 +20,29 @@ describe('lib/findOptions', function () {
     })
   })
   it('should be able to find semistandard listed as devDependency', function () {
-    return expect(function () {
-      var file = fixturesPath('simpleSemiStandard/index.js')
-      return expect(findOptions(file), 'to be fulfilled').then(function (options) {
-        return expect(options, 'to equal', {
-          projectRoot: fixturesPath('simpleSemiStandard'),
-          linter: 'semistandard',
-          options: {}
-        })
+    var file = fixturesPath('simpleSemiStandard/index.js')
+    return expect(findOptions(file), 'to be fulfilled').then(function (options) {
+      return expect(options, 'to equal', {
+        projectRoot: fixturesPath('simpleSemiStandard'),
+        linter: 'semistandard',
+        options: {}
       })
-    }, 'not to error')
+    })
   })
   it('should be able to find @novemberborn/as-i-preach', function () {
-    return expect(function () {
-      var file = fixturesPath('scopedLinter/index.js')
-      return expect(findOptions(file), 'to be fulfilled').then(function (options) {
-        return expect(options, 'to equal', {
-          projectRoot: fixturesPath('scopedLinter'),
-          linter: '@novemberborn/as-i-preach',
-          options: {}
-        })
+    var file = fixturesPath('scopedLinter/index.js')
+    return expect(findOptions(file), 'to be fulfilled').then(function (options) {
+      return expect(options, 'to equal', {
+        projectRoot: fixturesPath('scopedLinter'),
+        linter: '@novemberborn/as-i-preach',
+        options: {}
       })
-    }, 'not to error')
+    })
+  })
+  it('should not select a linter for a project with no linter', function () {
+    var file = fixturesPath('noStandardEngine/index.js')
+    return expect(findOptions(file), 'to be rejected').then(function (msg) {
+      return expect(msg, 'to satisfy', 'no supported linter found')
+    })
   })
 })
