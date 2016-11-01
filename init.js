@@ -13,7 +13,9 @@ function suppressError (err) {
   ].some(function (pattern) {
     if (typeof pattern === 'string') {
       return pattern === err.message
-    } else if (pattern instanceof RegExp) {
+    }
+    // istanbul ignore else
+    if (pattern instanceof RegExp) {
       return pattern.test(err.message)
     }
   })
