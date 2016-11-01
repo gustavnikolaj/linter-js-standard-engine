@@ -35,7 +35,7 @@ module.exports = {
         var fileScope = textEditor.getGrammar().scopeName
 
         if (this.grammarScopes.indexOf(fileScope) < 0) {
-          return []
+          return Promise.resolve([])
         }
 
         return findOptions(filePath)
