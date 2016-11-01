@@ -1,6 +1,7 @@
 /* global describe, it */
 
 var expect = require('unexpected')
+var uniqueTempDir = require('unique-temp-dir')
 var path = require('path')
 var findOptions = require('../../lib/findOptions')
 
@@ -43,6 +44,14 @@ describe('lib/findOptions', function () {
     var file = fixturesPath('noStandardEngine/index.js')
     return expect(findOptions(file), 'to be rejected').then(function (msg) {
       return expect(msg, 'to satisfy', 'no supported linter found')
+    })
+  })
+  it('should fail when package.json cannot be found', () => {
+    // Outside of this directory, presumably without a package.json from there to the filesystem root.
+    var dir = uniqueTempDir({ create: true })
+    var file = path.join(dir, 'file.js')
+    return expect(findOptions(file), 'to be rejected').then(msg => {
+      return expect(msg, 'to satisfy', 'no package.json found')
     })
   })
 })
