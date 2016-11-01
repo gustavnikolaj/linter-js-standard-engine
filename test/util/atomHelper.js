@@ -3,7 +3,6 @@ if (typeof global.atom === 'undefined') {
     notifications: {
       addError: function (desc, obj) {
         return new Promise(function (resolve, reject) {
-          console.log('wtf', obj)
           reject(obj.error)
         })
       }
