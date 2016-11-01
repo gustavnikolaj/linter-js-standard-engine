@@ -7,7 +7,7 @@ describe('lib/lint.js', function () {
   it('should return a function when called with path and content', function () {
     return expect(lintFactory('/filePath', 'var foo = bar'), 'to be a function')
   })
-  it('should call the linters lintText method', function () {
+  it('should forward errors from the linters lintText() method', function () {
     var lint = lintFactory('/filePath', 'var foo = bar')
     var linterMock = {
       lintText: function (fileContent, cb) {
@@ -16,6 +16,28 @@ describe('lib/lint.js', function () {
     }
     return expect(lint(linterMock), 'to be rejected').then(function (err) {
       return expect(err, 'to have message', 'MockError')
+    })
+  })
+  it('should convert error strings from the linters lintText() method', () => {
+    const lint = lintFactory('/filePath', 'var foo = bar')
+    const linterMock = {
+      lintText: function (fileContent, cb) {
+        return cb('error string')
+      }
+    }
+    return expect(lint(linterMock), 'to be rejected').then(function (err) {
+      return expect(err, 'to have message', 'error string')
+    })
+  })
+  it('should fail upon receiving an invalid report from the linters lintText() method', () => {
+    const lint = lintFactory('/filePath', 'var foo = bar')
+    const linterMock = {
+      lintText: function (fileContent, cb) {
+        return cb(null)
+      }
+    }
+    return expect(lint(linterMock), 'to be rejected').then(function (err) {
+      return expect(err, 'to have message', 'invalid lint report')
     })
   })
   it('should convert a eslint report to an atom report', function () {
