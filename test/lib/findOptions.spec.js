@@ -30,13 +30,25 @@ describe('lib/findOptions', function () {
       })
     })
   })
-  it('should be able to find @novemberborn/as-i-preach', function () {
+  it('should be able to find a linter from the standard-engine package.json key', function () {
+    var file = fixturesPath('standardEngineKey/index.js')
+    return expect(findOptions(file), 'to be fulfilled').then(function (options) {
+      return expect(options, 'to equal', {
+        projectRoot: fixturesPath('standardEngineKey'),
+        linter: 'my-linter',
+        options: {}
+      })
+    })
+  })
+  it('should read config for scoped linters', function () {
     var file = fixturesPath('scopedLinter/index.js')
     return expect(findOptions(file), 'to be fulfilled').then(function (options) {
       return expect(options, 'to equal', {
         projectRoot: fixturesPath('scopedLinter'),
-        linter: '@novemberborn/as-i-preach',
-        options: {}
+        linter: '@my-scope/my-linter',
+        options: {
+          hello: 'world'
+        }
       })
     })
   })

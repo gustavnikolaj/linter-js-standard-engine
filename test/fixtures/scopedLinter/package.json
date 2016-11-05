@@ -1,7 +1,7 @@
 {
   "name": "some-module",
-  "standard-engine": "@novemberborn/as-i-preach",
-  "devDependencies": {
-    "@novemberborn/as-i-preach": "1.0.0"
+  "standard-engine": "@my-scope/my-linter",
+  "my-linter": {
+    "hello": "world"
   }
 }
