@@ -48,7 +48,7 @@ describe('linter-js-standard-engine', function () {
       path: filePath
     })
     return expect(lint(textEditor), 'to be fulfilled').then(function (data) {
-      return expect(data, 'to be a valid lint report')
+      return expect(data, 'to be empty')
     })
   })
   it('should clean linters when deactivated', () => {
