@@ -4,3 +4,5 @@ node_js:
   - "5.10.0" # Ships with Atom 1.11.2
 script:
   - npm run coverage
+after_script:
+  - "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls"
