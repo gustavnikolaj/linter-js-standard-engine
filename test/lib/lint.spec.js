@@ -77,6 +77,10 @@ describe('lib/lint.js', function () {
                   nodeType: 'Literal',
                   source: 'var foo = "bar"',
                   fix: { range: [10, 15], text: "'bar'" }
+                },
+                {
+                  fatal: true,
+                  message: 'Made up message to test fallback code paths'
                 }
               ],
               errorCount: 3,
@@ -108,6 +112,12 @@ describe('lib/lint.js', function () {
           text: 'Strings must use singlequote.',
           filePath: '/filePath',
           range: [ [ 0, 1 ], [ 0, 10 ] ]
+        },
+        {
+          type: 'Error',
+          text: 'Made up message to test fallback code paths',
+          filePath: '/filePath',
+          range: [ [ 0, 0 ], [ 0, 0 ] ]
         }
       ])
     })
