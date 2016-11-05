@@ -38,4 +38,16 @@ describe('lib/lintWorker', () => {
       expect(message.err, 'to be', 'crash in linter loading')
     })
   })
+  it('should report crashes when linting', () => {
+    const child = childProcess.fork(workerPath, [require.resolve('../fixtures/stubForWorker/crashOnLint')])
+    const promise = new Promise(resolve => {
+      child.on('message', m => resolve(m))
+    })
+
+    child.send({ id: 1, source: '' })
+
+    return promise.then((message) => {
+      expect(message.err, 'to have property', 'message', 'threw when linting')
+    })
+  })
 })
