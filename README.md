@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/gustavnikolaj/linter-js-standard-engine.svg?branch=master)](https://travis-ci.org/gustavnikolaj/linter-js-standard-engine)
 [![Build status](https://ci.appveyor.com/api/projects/status/ce33sbafvyhp9ovn?svg=true)](https://ci.appveyor.com/project/gustavnikolaj/linter-js-standard-engine)
+[![Coverage Status](https://coveralls.io/repos/github/gustavnikolaj/linter-js-standard-engine/badge.svg?branch=master)](https://coveralls.io/github/gustavnikolaj/linter-js-standard-engine?branch=master)
 
 A linter for GitHub's [Atom Editor](https://atom.io) using the
 [Linter Plugin](https://github.com/atom-community/linter), for use with the
