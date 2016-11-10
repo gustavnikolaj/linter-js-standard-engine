@@ -1,5 +1,5 @@
 environment:
-  nodejs_version: "5.10.0"
+  nodejs_version: "6.3.0"
 
 install:
   - ps: Install-Product node $env:nodejs_version
