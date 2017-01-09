@@ -60,21 +60,16 @@ describe('lib/getLinter', () => {
       }
     })
   })
-  it('should forward errors to the lintText() callback', () => {
+  it('should forward errors to the lintText() promise', () => {
     const linter = getLinter('linter', '/')
-    const expected = Symbol()
+    const expected = 'error'
     forks.linter.on('send', cmd => {
-      forks.linter.emit('message', { id: cmd.id, err: expected })
+      forks.linter.emit('message', { id: cmd.id, error: { message: expected } })
     })
 
-    const promise = linter.then(linter => {
-      return new Promise((resolve, reject) => {
-        linter.lintText('', {}, reject)
-      })
-    })
-
-    return expect(promise, 'to be rejected').then(actual => {
-      expect(actual, 'to be', expected)
+    return expect(linter.lintText('', {}), 'to be rejected').then(actual => {
+      expect(actual, 'to be a', Error)
+      expect(actual, 'to have message', expected)
     })
   })
   it('should ignore unexpected messages from the worker', () => {
@@ -82,40 +77,33 @@ describe('lib/getLinter', () => {
     forks.linter.emit('message', { id: 10 })
   })
   it('should clean up linters that exit', () => {
-    return getLinter('first', '/').then(first => {
-      return expect(getLinter('first', '/'), 'when fulfilled', 'to be', first)
+    const foo = getLinter('first', '/')
+    expect(getLinter('first', '/'), 'to be', foo)
+    forks.first.emit('exit')
+    return new Promise(resolve => setTimeout(resolve, 10))
+      .then(() => {
+        const bar = getLinter('first', '/')
+        expect(bar, 'not to be', foo)
+
+        // Ensure first is purged from the cache
+        getLinter('second', '/')
+        getLinter('third', '/')
+
+        const child = forks.first
+        expect(child, 'to have property', 'wasDisconnected', true)
+        const baz = getLinter('first', '/')
+
+        child.emit('exit')
+        return new Promise(resolve => setTimeout(resolve, 10))
         .then(() => {
-          forks.first.emit('exit')
-          return new Promise(resolve => setTimeout(resolve, 10))
+          expect(getLinter('first', '/'), 'to be', baz)
         })
-        .then(() => {
-          const old = first
-          return getLinter('first', '/').then(first => {
-            expect(first, 'not to be', old)
-
-            // Ensure first is purged from the cache
-            getLinter('second', '/')
-            getLinter('third', '/')
-
-            const child = forks.first
-            expect(child, 'to have property', 'wasDisconnected', true)
-            const promise = getLinter('first', '/')
-
-            child.emit('exit')
-            return new Promise(resolve => setTimeout(resolve, 10))
-              .then(() => promise)
-              .then(first => {
-                return expect(getLinter('first', '/'), 'when fulfilled', 'to be', first)
-              })
-          })
-        })
-    })
+      })
   })
   it('should ignore disconnect errors', () => {
-    return getLinter('first', '/').then(linter => {
-      forks.first.disconnect = () => { throw new Error('ignore me') }
-      expect(() => linter.shutdown(), 'not to throw')
-    })
+    const linter = getLinter('first', '/')
+    forks.first.disconnect = () => { throw new Error('ignore me') }
+    expect(() => linter.shutdown(), 'not to throw')
   })
 
   describe('cleanLinters()', () => {

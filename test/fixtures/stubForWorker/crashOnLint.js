@@ -1,4 +1,3 @@
 exports.lintText = () => {
-  const err = { message: 'threw when linting' }
-  throw err
+  throw new Error('threw when linting')
 }

@@ -23,8 +23,8 @@ describe('lib/lintWorker', () => {
     child.send({ id: 2, source: '' })
 
     return promise.then(() => {
-      expect(messages[0].result, 'to have property', 'count', 1)
-      expect(messages[1].result, 'to have property', 'count', 2)
+      expect(messages[0].results[0], 'to have property', 'count', 1)
+      expect(messages[1].results[0], 'to have property', 'count', 2)
     })
   })
   it('should report crashes in linter loading', () => {
@@ -36,7 +36,7 @@ describe('lib/lintWorker', () => {
     child.send({ id: 1, source: '' })
 
     return promise.then((message) => {
-      expect(message.err, 'to have property', 'message', 'crash in linter loading')
+      expect(message.error, 'to have property', 'message', 'crash in linter loading')
     })
   })
   it('should report missing linters as a linter message', () => {
@@ -49,18 +49,16 @@ describe('lib/lintWorker', () => {
 
     return promise.then((message) => {
       expect(message, 'to satisfy', {
-        result: {
-          results: [
-            {
-              messages: [
-                {
-                  message: 'Could not load linter "non-existent-for-sure-or-so-we-hope"',
-                  fatal: true
-                }
-              ]
-            }
-          ]
-        }
+        results: [
+          {
+            messages: [
+              {
+                message: 'Could not load linter "non-existent-for-sure-or-so-we-hope"',
+                fatal: true
+              }
+            ]
+          }
+        ]
       })
     })
   })
@@ -74,7 +72,7 @@ describe('lib/lintWorker', () => {
     child.send({ id: 1, source: '' })
 
     return promise.then((message) => {
-      expect(message.result, 'to have property', 'hello', 'world')
+      expect(message.results[0], 'to have property', 'hello', 'world')
     })
   })
   it('should report crashes when linting', () => {
@@ -86,7 +84,19 @@ describe('lib/lintWorker', () => {
     child.send({ id: 1, source: '' })
 
     return promise.then((message) => {
-      expect(message.err, 'to have property', 'message', 'threw when linting')
+      expect(message.error, 'to have property', 'message', 'threw when linting')
+    })
+  })
+  it('should report errors when linting', () => {
+    const child = childProcess.fork(workerPath, [require.resolve('../fixtures/stubForWorker/errOnLint')])
+    const promise = new Promise(resolve => {
+      child.on('message', m => resolve(m))
+    })
+
+    child.send({ id: 1, source: '' })
+
+    return promise.then((message) => {
+      expect(message.error, 'to have property', 'message', 'err when linting')
     })
   })
 })

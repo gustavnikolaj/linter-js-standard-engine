@@ -7,5 +7,5 @@ let count = 0
 
 exports.lintText = (source, opts, cb) => {
   count++
-  cb(null, { count })
+  cb(null, { results: [{ count }] })
 }
