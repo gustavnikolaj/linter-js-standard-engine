@@ -1,16 +1,16 @@
-var findOptions = require('./lib/findOptions')
-var getLinter = require('./lib/getLinter')
-var lint = require('./lib/lint')
-var cleanLinters = require('./lib/getLinter').cleanLinters
-var minimatch = require('minimatch')
-var path = require('path')
+const findOptions = require('./lib/findOptions')
+const getLinter = require('./lib/getLinter')
+const lint = require('./lib/lint')
+const cleanLinters = require('./lib/getLinter').cleanLinters
+const minimatch = require('minimatch')
+const path = require('path')
 
 function suppressError (err) {
   return [
     'no supported linter found',
     'no package.json found',
     /^Could not load linter "/
-  ].some(function (pattern) {
+  ].some(pattern => {
     if (typeof pattern === 'string') {
       return pattern === err.message
     }
@@ -22,29 +22,29 @@ function suppressError (err) {
 }
 
 module.exports = {
-  deactivate: function () {
+  deactivate () {
     cleanLinters()
   },
-  provideLinter: function () {
+  provideLinter () {
     return {
       name: 'lint',
       grammarScopes: ['source.js', 'source.js.jsx'],
       scope: 'file',
       lintOnFly: true,
-      lint: function (textEditor) {
-        var fileContent = textEditor.getText()
-        var filePath = textEditor.getPath()
-        var fileScope = textEditor.getGrammar().scopeName
+      lint (textEditor) {
+        const fileContent = textEditor.getText()
+        const filePath = textEditor.getPath()
+        const fileScope = textEditor.getGrammar().scopeName
 
-        if (this.grammarScopes.indexOf(fileScope) < 0) {
+        if (!this.grammarScopes.includes(fileScope)) {
           return Promise.resolve([])
         }
 
         return findOptions(filePath)
-          .then(function (options) {
-            var ignoreGlobs = options.options && options.options.ignore || []
-            var fileIsIgnored = ignoreGlobs.some(function (pattern) {
-              var relativePath = path.relative(options.projectRoot, filePath)
+          .then(options => {
+            const ignoreGlobs = options.options && options.options.ignore || []
+            const fileIsIgnored = ignoreGlobs.some(pattern => {
+              const relativePath = path.relative(options.projectRoot, filePath)
               return minimatch(relativePath, pattern)
             })
             if (fileIsIgnored) {
@@ -53,7 +53,7 @@ module.exports = {
             return getLinter(options.linter, options.projectRoot)
               .then(lint(filePath, fileContent))
           })
-          .catch(function (err) {
+          .catch(err => {
             if (!suppressError(err)) {
               atom.notifications.addError(err.message || 'Something bad happened', {
                 error: err,
