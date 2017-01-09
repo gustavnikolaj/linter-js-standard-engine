@@ -70,9 +70,7 @@ describe('linter-js-standard-engine', function () {
     let currentError
     const linter = proxyquire('../init', {
       './lib/lint' () {
-        return () => {
-          return Promise.reject(currentError)
-        }
+        return Promise.reject(currentError)
       }
     }).provideLinter()
 

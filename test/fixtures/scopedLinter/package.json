@@ -2,6 +2,6 @@
   "name": "some-module",
   "standard-engine": "@my-scope/my-linter",
   "my-linter": {
-    "hello": "world"
+    "ignore": ["world"]
   }
 }

@@ -1,2 +1,1 @@
-const err = { message: 'crash in linter loading' }
-throw err
+throw new Error('crash in linter loading')

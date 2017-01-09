@@ -13,10 +13,8 @@ describe('lib/findOptions', function () {
   it('should be able to find options about this module', function () {
     return expect(findOptions(__filename), 'to be fulfilled').then(function (options) {
       return expect(options, 'to satisfy', {
-        linter: 'standard',
-        options: {
-          globals: [ 'atom' ]
-        }
+        linterName: 'standard',
+        ignoreGlobs: ['test/fixtures/faked/*.js']
       })
     })
   })
@@ -25,8 +23,8 @@ describe('lib/findOptions', function () {
     return expect(findOptions(file), 'to be fulfilled').then(function (options) {
       return expect(options, 'to equal', {
         projectRoot: fixturesPath('simpleSemiStandard'),
-        linter: 'semistandard',
-        options: {}
+        linterName: 'semistandard',
+        ignoreGlobs: []
       })
     })
   })
@@ -35,8 +33,8 @@ describe('lib/findOptions', function () {
     return expect(findOptions(file), 'to be fulfilled').then(function (options) {
       return expect(options, 'to equal', {
         projectRoot: fixturesPath('standardEngineKey'),
-        linter: 'my-linter',
-        options: {}
+        linterName: 'my-linter',
+        ignoreGlobs: []
       })
     })
   })
@@ -45,10 +43,8 @@ describe('lib/findOptions', function () {
     return expect(findOptions(file), 'to be fulfilled').then(function (options) {
       return expect(options, 'to equal', {
         projectRoot: fixturesPath('scopedLinter'),
-        linter: '@my-scope/my-linter',
-        options: {
-          hello: 'world'
-        }
+        linterName: '@my-scope/my-linter',
+        ignoreGlobs: ['world']
       })
     })
   })
