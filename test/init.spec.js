@@ -68,8 +68,7 @@ describe('linter-js-standard-engine', () => {
 
     for (const msg of [
       'no supported linter found',
-      'no package.json found',
-      'Could not load linter "foo"'
+      'no package.json found'
     ]) {
       it(`should suppress "${msg}" errors`, () => {
         currentError = new Error(msg)
