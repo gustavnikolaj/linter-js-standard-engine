@@ -3,7 +3,7 @@ if (typeof global.atom === 'undefined') {
     notifications: {
       _errors: [],
 
-      addError: function (desc, obj) {
+      addError (desc, obj) {
         const promise = new Promise((resolve, reject) => {
           // Reject using setImmediate, allowing tests to silence the error
           // before it's reported has an unhandled rejection.

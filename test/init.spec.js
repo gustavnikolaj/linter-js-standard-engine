@@ -1,39 +1,33 @@
 'use strict'
 /* global describe, it */
 
-var expect = require('unexpected').clone()
-var proxyquire = require('proxyquire')
-var fs = require('fs')
-var path = require('path')
-var plugin = require('../init')
-var textEditorFactory = require('./util/textEditorFactory')
-var linter = plugin.provideLinter()
-var lint = linter.lint.bind(linter)
+const expect = require('unexpected').clone()
+const proxyquire = require('proxyquire')
+const fs = require('fs')
+const path = require('path')
+const plugin = require('../init')
+const textEditorFactory = require('./util/textEditorFactory')
+const linter = plugin.provideLinter()
+const lint = linter.lint.bind(linter)
 
-expect.addAssertion('to be a valid lint report', function (expect, subject) {
-  return expect(subject, 'to have items satisfying', {
-    type: expect.it('to be a string').and('not to be empty'),
-    text: expect.it('to be a string').and('not to be empty'),
-    filePath: expect.it('to be a string').and('to match', /\.js$/),
-    range: expect.it('to have items satisfying', 'to have items satisfying', 'to be a number')
-  })
-})
+expect.addAssertion('to be a valid lint report', (expect, subject) => expect(subject, 'to have items satisfying', {
+  type: expect.it('to be a string').and('not to be empty'),
+  text: expect.it('to be a string').and('not to be empty'),
+  filePath: expect.it('to be a string').and('to match', /\.js$/),
+  range: expect.it('to have items satisfying', 'to have items satisfying', 'to be a number')
+}))
 
-describe('linter-js-standard-engine', function () {
-  it('should be able to lint a test file', function () {
-    var textEditor = textEditorFactory('var foo = "bar"')
-    return expect(lint(textEditor), 'to be fulfilled').then(function (data) {
-      return expect(data, 'to be a valid lint report')
-    })
+describe('linter-js-standard-engine', () => {
+  it('should be able to lint a test file', () => {
+    const textEditor = textEditorFactory('var foo = "bar"')
+    return expect(lint(textEditor), 'to be fulfilled').then(data => expect(data, 'to be a valid lint report'))
   })
-  it('should be able to lint a test file', function () {
-    var textEditor = textEditorFactory({
+  it('should be able to lint a test file', () => {
+    const textEditor = textEditorFactory({
       source: 'var foo = "bar"',
       path: path.resolve(__dirname, 'fixtures', 'faked', 'foo.js')
     })
-    return expect(lint(textEditor), 'to be fulfilled').then(function (data) {
-      return expect(data, 'to be empty')
-    })
+    return expect(lint(textEditor), 'to be fulfilled').then(data => expect(data, 'to be empty'))
   })
   it('should skip files with the wrong scope', () => {
     const textEditor = textEditorFactory({ source: '# markdown', scopeName: 'source.gfm' })
@@ -47,9 +41,7 @@ describe('linter-js-standard-engine', function () {
       source: fs.readFileSync(filePath),
       path: filePath
     })
-    return expect(lint(textEditor), 'to be fulfilled').then(function (data) {
-      return expect(data, 'to be empty')
-    })
+    return expect(lint(textEditor), 'to be fulfilled').then(data => expect(data, 'to be empty'))
   })
   it('should clean linters when deactivated', () => {
     let cleaned = false
@@ -81,16 +73,14 @@ describe('linter-js-standard-engine', function () {
     ]) {
       it(`should suppress "${msg}" errors`, () => {
         currentError = new Error(msg)
-        return expect(linter.lint(textEditorFactory('')), 'to be fulfilled').then(function (data) {
-          return expect(data, 'to be empty')
-        })
+        return expect(linter.lint(textEditorFactory('')), 'to be fulfilled').then(data => expect(data, 'to be empty'))
       })
     }
 
     it('should add errors that are not suppressed', () => {
       atom.notifications._errors = []
       currentError = new Error('do not suppress me')
-      return expect(linter.lint(textEditorFactory('')), 'to be fulfilled').then(function (data) {
+      return expect(linter.lint(textEditorFactory('')), 'to be fulfilled').then(data => {
         expect(data, 'to be empty')
 
         expect(atom.notifications._errors, 'to have length', 1)
@@ -111,7 +101,7 @@ describe('linter-js-standard-engine', function () {
     it('should add errors that are not suppressed with a default description', () => {
       atom.notifications._errors = []
       currentError = new Error('')
-      return expect(linter.lint(textEditorFactory('')), 'to be fulfilled').then(function (data) {
+      return expect(linter.lint(textEditorFactory('')), 'to be fulfilled').then(data => {
         expect(data, 'to be empty')
 
         expect(atom.notifications._errors, 'to have length', 1)

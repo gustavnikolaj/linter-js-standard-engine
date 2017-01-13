@@ -1,20 +1,19 @@
-var path = require('path')
+const path = require('path')
 
-module.exports = function textEditorFactory (input) {
-  input = input || {}
+module.exports = function textEditorFactory (input = {}) {
   if (typeof input === 'string') {
     input = {
       source: input
     }
   }
   return {
-    getText: function () {
+    getText () {
       return input.source || ''
     },
-    getPath: function () {
+    getPath () {
       return input.path || path.resolve(__dirname, 'foo.js') // standard devDep will be found
     },
-    getGrammar: function () {
+    getGrammar () {
       return {
         scopeName: input.scopeName || 'source.js'
       }
