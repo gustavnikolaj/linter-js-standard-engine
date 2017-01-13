@@ -1,20 +1,20 @@
 require('./util/promiseHelper')
-var textEditorFactory = require('./util/textEditorFactory')
-var linter = require('../init').provideLinter()
-var debugFactory = require('debug')
+const textEditorFactory = require('./util/textEditorFactory')
+const linter = require('../init').provideLinter()
+const debugFactory = require('debug')
 
-var firstRun = debugFactory('first run')
-var secondRun = debugFactory('second run')
+const firstRun = debugFactory('first run')
+const secondRun = debugFactory('second run')
 
-var startTime = Date.now()
+const startTime = Date.now()
 
 firstRun('started')
 
-linter.lint(textEditorFactory('var foo = "bar"')).then(function (data) {
+linter.lint(textEditorFactory('var foo = "bar"')).then(data => {
   firstRun('done')
 
   secondRun('started')
-  linter.lint(textEditorFactory('var foo = "bar"')).then(function (data) {
+  linter.lint(textEditorFactory('var foo = "bar"')).then(data => {
     secondRun('done')
 
     console.log('\nTotal time spent:', Date.now() - startTime, 'ms')
