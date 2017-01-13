@@ -8,16 +8,9 @@ const { relative } = require('path')
 function suppressError (err) {
   return [
     'no supported linter found',
-    'no package.json found',
-    /^Could not load linter "/
+    'no package.json found'
   ].some(pattern => {
-    if (typeof pattern === 'string') {
-      return pattern === err.message
-    }
-    // istanbul ignore else
-    if (pattern instanceof RegExp) {
-      return pattern.test(err.message)
-    }
+    return pattern === err.message
   })
 }
 
