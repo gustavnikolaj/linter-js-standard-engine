@@ -48,6 +48,7 @@
     }
   },
   "dependencies": {
+    "es6-error": "^4.0.1",
     "lru-cache": "^4.0.1",
     "minimatch": "^3.0.3",
     "read-pkg-up": "^2.0.0",

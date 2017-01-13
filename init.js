@@ -6,12 +6,7 @@ const minimatch = require('minimatch')
 const { relative } = require('path')
 
 function suppressError (err) {
-  return [
-    'no supported linter found',
-    'no package.json found'
-  ].some(pattern => {
-    return pattern === err.message
-  })
+  return err.name === 'MissingLinterError' || err.name === 'MissingPackageError'
 }
 
 function lint (textEditor) {
