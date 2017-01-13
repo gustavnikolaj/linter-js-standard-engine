@@ -1,4 +1,3 @@
-require('./util/promiseHelper')
 const textEditorFactory = require('./util/textEditorFactory')
 const linter = require('../init').provideLinter()
 const debugFactory = require('debug')
