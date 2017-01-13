@@ -6,6 +6,7 @@ const proxyquire = require('proxyquire')
 const fs = require('fs')
 const path = require('path')
 const plugin = require('../init')
+const { MissingLinterError, MissingPackageError } = require('../lib/findOptions')
 const textEditorFactory = require('./util/textEditorFactory')
 const linter = plugin.provideLinter()
 const lint = linter.lint.bind(linter)
@@ -66,12 +67,9 @@ describe('linter-js-standard-engine', () => {
       }
     }).provideLinter()
 
-    for (const msg of [
-      'no supported linter found',
-      'no package.json found'
-    ]) {
-      it(`should suppress "${msg}" errors`, () => {
-        currentError = new Error(msg)
+    for (const ErrorClass of [MissingLinterError, MissingPackageError]) {
+      it(`should suppress "${ErrorClass.name}" errors`, () => {
+        currentError = new ErrorClass()
         return expect(linter.lint(textEditorFactory('')), 'to be fulfilled').then(data => expect(data, 'to be empty'))
       })
     }
