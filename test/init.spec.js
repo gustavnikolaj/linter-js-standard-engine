@@ -6,7 +6,6 @@ const proxyquire = require('proxyquire')
 const fs = require('fs')
 const path = require('path')
 const plugin = require('../init')
-const { MissingLinterError, MissingPackageError } = require('../lib/findOptions')
 const textEditorFactory = require('./util/textEditorFactory')
 const linter = plugin.provideLinter()
 const lint = linter.lint.bind(linter)
@@ -57,64 +56,5 @@ describe('linter-js-standard-engine', () => {
     expect(cleaned, 'to be false')
     plugin.deactivate()
     expect(cleaned, 'to be true')
-  })
-
-  describe('error handling', () => {
-    let currentError
-    const linter = proxyquire('../init', {
-      './lib/lint' () {
-        return Promise.reject(currentError)
-      }
-    }).provideLinter()
-
-    for (const ErrorClass of [MissingLinterError, MissingPackageError]) {
-      it(`should suppress "${ErrorClass.name}" errors`, () => {
-        currentError = new ErrorClass()
-        return expect(linter.lint(textEditorFactory('')), 'to be fulfilled').then(data => expect(data, 'to be empty'))
-      })
-    }
-
-    it('should add errors that are not suppressed', () => {
-      atom.notifications._errors = []
-      currentError = new Error('do not suppress me')
-      return expect(linter.lint(textEditorFactory('')), 'to be fulfilled').then(data => {
-        expect(data, 'to be empty')
-
-        expect(atom.notifications._errors, 'to have length', 1)
-        const actual = atom.notifications._errors[0]
-
-        actual.silence()
-
-        expect(actual, 'to satisfy', {
-          desc: 'do not suppress me',
-          obj: {
-            error: currentError,
-            detail: currentError.stack,
-            dismissable: true
-          }
-        })
-      })
-    })
-    it('should add errors that are not suppressed with a default description', () => {
-      atom.notifications._errors = []
-      currentError = new Error('')
-      return expect(linter.lint(textEditorFactory('')), 'to be fulfilled').then(data => {
-        expect(data, 'to be empty')
-
-        expect(atom.notifications._errors, 'to have length', 1)
-        const actual = atom.notifications._errors[0]
-
-        actual.silence()
-
-        expect(actual, 'to satisfy', {
-          desc: 'Something bad happened',
-          obj: {
-            error: currentError,
-            detail: currentError.stack,
-            dismissable: true
-          }
-        })
-      })
-    })
   })
 })
