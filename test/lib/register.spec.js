@@ -93,4 +93,16 @@ describe('linter-js-standard-engine', () => {
     }
     expect(states, 'to equal', [true])
   })
+  it('should provide an error reporter when linting', () => {
+    let actual
+    const { lint } = proxyquire('../../lib/register', {
+      './lint' (textEditor, reportError) {
+        actual = reportError
+        return new Promise(() => {})
+      }
+    }).provideLinter()
+
+    lint(textEditorFactory(''))
+    expect(actual, 'to be', require('../../lib/reportError'))
+  })
 })

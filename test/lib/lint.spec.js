@@ -103,6 +103,9 @@ describe('lib/lint.js', () => {
       }
     })
 
+    let reportedError
+    const reportError = err => { reportedError = err }
+
     for (const ErrorClass of [MissingLinterError, MissingPackageError]) {
       it(`should suppress "${ErrorClass.name}" errors`, () => {
         currentError = new ErrorClass()
@@ -110,66 +113,31 @@ describe('lib/lint.js', () => {
       })
     }
 
-    it('should add errors that are not suppressed', () => {
-      atom.notifications._errors = []
+    it('should report errors that are not suppressed', () => {
       currentError = new Error('do not suppress me')
       stub = () => Promise.reject(currentError)
-      return expect(lint(textEditorFactory('')), 'to be fulfilled').then(data => {
+      return expect(lint(textEditorFactory(''), reportError), 'to be fulfilled').then(data => {
         expect(data, 'to be empty')
-
-        expect(atom.notifications._errors, 'to have length', 1)
-        const actual = atom.notifications._errors[0]
-
-        actual.silence()
-
-        expect(actual, 'to satisfy', {
-          desc: 'do not suppress me',
-          obj: {
-            error: currentError,
-            detail: currentError.stack,
-            dismissable: true
-          }
-        })
+        expect(reportedError, 'to be', currentError)
       })
     })
     it('should add errors that are not suppressed with a default description', () => {
-      atom.notifications._errors = []
       currentError = new Error('')
       stub = () => Promise.reject(currentError)
-      return expect(lint(textEditorFactory('')), 'to be fulfilled').then(data => {
+      return expect(lint(textEditorFactory(''), reportError), 'to be fulfilled').then(data => {
         expect(data, 'to be empty')
-
-        expect(atom.notifications._errors, 'to have length', 1)
-        const actual = atom.notifications._errors[0]
-
-        actual.silence()
-
-        expect(actual, 'to satisfy', {
-          desc: 'Something bad happened',
-          obj: {
-            error: currentError,
-            detail: currentError.stack,
-            dismissable: true
-          }
-        })
+        expect(reportedError, 'to be', currentError)
       })
     })
   })
 
   it('should add an error upon receiving an invalid report from the linters lintText() method', () => {
     stub = () => Promise.resolve([])
-    atom.notifications._errors = []
-    return expect(lint(textEditorFactory('')), 'to be fulfilled').then(data => {
+    let reportedError
+    const reportError = err => { reportedError = err }
+    return expect(lint(textEditorFactory(''), reportError), 'to be fulfilled').then(data => {
       expect(data, 'to be empty')
-
-      expect(atom.notifications._errors, 'to have length', 1)
-      const actual = atom.notifications._errors[0]
-
-      actual.silence()
-
-      expect(actual, 'to satisfy', {
-        desc: 'invalid lint report'
-      })
+      expect(reportedError, 'to have message', 'Invalid lint report')
     })
   })
 })
