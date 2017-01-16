@@ -1,5 +1,5 @@
 const textEditorFactory = require('./util/textEditorFactory')
-const linter = require('../init').provideLinter()
+const linter = require('../lib/register').provideLinter()
 const debugFactory = require('debug')
 
 const firstRun = debugFactory('first run')
