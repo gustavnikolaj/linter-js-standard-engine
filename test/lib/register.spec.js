@@ -5,8 +5,8 @@ const expect = require('unexpected').clone()
 const proxyquire = require('proxyquire').noPreserveCache()
 const fs = require('fs')
 const path = require('path')
-const plugin = require('../init')
-const textEditorFactory = require('./util/textEditorFactory')
+const plugin = require('../../lib/register')
+const textEditorFactory = require('../util/textEditorFactory')
 const linter = plugin.provideLinter()
 const lint = linter.lint.bind(linter)
 
@@ -25,7 +25,7 @@ describe('linter-js-standard-engine', () => {
   it('should be able to lint a test file', () => {
     const textEditor = textEditorFactory({
       source: 'var foo = "bar"',
-      path: path.resolve(__dirname, 'fixtures', 'faked', 'foo.js')
+      path: path.resolve(__dirname, '..', 'fixtures', 'faked', 'foo.js')
     })
     return expect(lint(textEditor), 'to be fulfilled').then(data => expect(data, 'to be empty'))
   })
@@ -36,7 +36,7 @@ describe('linter-js-standard-engine', () => {
     })
   })
   it('should not skip any files if the ignore option is not set', () => {
-    const filePath = path.resolve(__dirname, 'fixtures', 'simpleSemiStandard', 'index.js')
+    const filePath = path.resolve(__dirname, '..', 'fixtures', 'simpleSemiStandard', 'index.js')
     const textEditor = textEditorFactory({
       source: fs.readFileSync(filePath),
       path: filePath
@@ -45,8 +45,8 @@ describe('linter-js-standard-engine', () => {
   })
   it('should clean linters when deactivated', () => {
     let cleaned = false
-    const plugin = proxyquire('../init', {
-      './lib/getLinter': {
+    const plugin = proxyquire('../../lib/register', {
+      './getLinter': {
         cleanLinters () {
           cleaned = true
         }
