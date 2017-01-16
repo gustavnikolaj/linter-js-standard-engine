@@ -2,7 +2,7 @@
 /* global describe, it */
 
 const expect = require('unexpected')
-const proxyquire = require('proxyquire')
+const proxyquire = require('proxyquire').noPreserveCache()
 const EventEmitter = require('events')
 
 const forks = {}

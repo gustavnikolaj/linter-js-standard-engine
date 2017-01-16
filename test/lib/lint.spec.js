@@ -2,7 +2,7 @@
 
 const path = require('path')
 const expect = require('unexpected').clone()
-const proxyquire = require('proxyquire')
+const proxyquire = require('proxyquire').noPreserveCache()
 const textEditorFactory = require('../util/textEditorFactory')
 const { MissingLinterError, MissingPackageError } = require('../../lib/findOptions')
 
