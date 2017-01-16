@@ -4,6 +4,7 @@
 const expect = require('unexpected')
 const proxyquire = require('proxyquire').noPreserveCache()
 const EventEmitter = require('events')
+const caches = require('../../lib/caches')
 
 const forks = {}
 
@@ -106,10 +107,10 @@ describe('lib/getLinter', () => {
     expect(() => linter.shutdown(), 'not to throw')
   })
 
-  describe('cleanLinters()', () => {
+  describe('clearing all caches', () => {
     it('should shut down all workers', () => {
       // Reset state
-      getLinter.cleanLinters()
+      caches.clearAll()
 
       getLinter('first', '/')
       getLinter('second', '/')
@@ -122,7 +123,7 @@ describe('lib/getLinter', () => {
         }
       })
 
-      getLinter.cleanLinters()
+      caches.clearAll()
       expect(forks, 'to satisfy', {
         first: {
           wasDisconnected: true
