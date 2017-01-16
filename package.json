@@ -47,6 +47,7 @@
     }
   },
   "dependencies": {
+    "clean-yaml-object": "^0.1.0",
     "es6-error": "^4.0.1",
     "find-up": "^2.1.0",
     "lru-cache": "^4.0.1",
