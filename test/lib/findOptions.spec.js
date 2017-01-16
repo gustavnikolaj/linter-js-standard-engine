@@ -1,8 +1,14 @@
 /* global describe, it */
 
+const path = require('path')
+
+const findUp = require('find-up')
+const proxyquire = require('proxyquire').noPreserveCache()
+const readPkg = require('read-pkg')
 const expect = require('unexpected')
 const uniqueTempDir = require('unique-temp-dir')
-const path = require('path')
+
+const caches = require('../../lib/caches')
 const findOptions = require('../../lib/findOptions')
 
 function fixturesPath (relativePath) {
@@ -48,6 +54,41 @@ describe('lib/findOptions', () => {
     const file = path.join(dir, 'file.js')
     return expect(findOptions(file), 'to be rejected').then(msg => {
       return expect(msg, 'to satisfy', 'no package.json found')
+    })
+  })
+
+  describe('caching', () => {
+    const findCwds = []
+    const readPkgs = []
+    const findOptions = proxyquire('../../lib/findOptions', {
+      'find-up' (name, { cwd }) {
+        findCwds.push(cwd)
+        return findUp(name, { cwd })
+      },
+      'read-pkg' (path) {
+        readPkgs.push(path)
+        return readPkg(path)
+      }
+    })
+
+    it('should cache results for the same file', () => {
+      return findOptions(__filename).then(options => {
+        return expect(findOptions(__filename), 'to be fulfilled').then(cached => expect(cached, 'to be', options))
+      })
+    })
+    it('should cache results for files in the same directory', () => {
+      return findOptions(path.join(__dirname, 'lint.spec.js')).then(options => {
+        return expect(findOptions(__filename), 'to be fulfilled').then(cached => expect(cached, 'to be', options))
+      })
+    })
+
+    describe('clearing all caches', () => {
+      it('should lead to fresh options', () => {
+        return findOptions(__filename).then(options => {
+          caches.clearAll()
+          return expect(findOptions(__filename), 'to be fulfilled').then(fresh => expect(fresh, 'not to be', options))
+        })
+      })
     })
   })
 })
