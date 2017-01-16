@@ -34,22 +34,24 @@ if (typeof global.atom === 'undefined') {
     notifications: {
       _errors: [],
 
-      addError (desc, obj) {
-        const promise = new Promise((resolve, reject) => {
-          // Reject using setImmediate, allowing tests to silence the error
-          // before it's reported has an unhandled rejection.
-          setImmediate(() => reject(obj.error))
-        })
-
-        this._errors.push({
-          desc,
-          obj,
-          silence () {
-            promise.catch(() => {})
+      addError (message, options) {
+        const obj = {
+          message,
+          options,
+          _callbacks: new Set(),
+          _dismiss () {
+            for (const cb of this._callbacks) {
+              cb()
+            }
           }
-        })
+        }
+        this._errors.push(obj)
 
-        return promise
+        return {
+          onDidDismiss (callback) {
+            obj._callbacks.add(callback)
+          }
+        }
       }
     }
   }
