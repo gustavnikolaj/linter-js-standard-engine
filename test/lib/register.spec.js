@@ -1,12 +1,15 @@
 'use strict'
 /* global describe, it */
 
-const expect = require('unexpected').clone()
-const proxyquire = require('proxyquire').noPreserveCache()
 const fs = require('fs')
 const path = require('path')
+
+const expect = require('unexpected').clone()
+const proxyquire = require('proxyquire').noPreserveCache()
+
 const plugin = require('../../lib/register')
 const textEditorFactory = require('../util/textEditorFactory')
+
 const linter = plugin.provideLinter()
 const lint = linter.lint.bind(linter)
 
@@ -56,5 +59,38 @@ describe('linter-js-standard-engine', () => {
     expect(cleared, 'to be false')
     plugin.deactivate()
     expect(cleared, 'to be true')
+  })
+  it('should register a restart command', () => {
+    atom.commands._commands = []
+    proxyquire('../../lib/register', {})
+    const commands = require('../../lib/commands')
+
+    expect(atom.commands._commands, 'to have key', 'atom-workspace')
+    expect(atom.commands._commands['atom-workspace'], 'to contain', {
+      name: 'Standard Engine:Restart',
+      callback: commands['Standard Engine:Restart'],
+      disposed: false
+    })
+  })
+  it('should dispose commands when deactivated', () => {
+    atom.commands._commands = []
+    const plugin = proxyquire('../../lib/register', {})
+
+    let states = []
+    for (const target in atom.commands._commands) {
+      for (const { disposed } of atom.commands._commands[target]) {
+        states.push(disposed)
+      }
+    }
+    expect(states, 'to equal', [false])
+
+    plugin.deactivate()
+    states = []
+    for (const target in atom.commands._commands) {
+      for (const { disposed } of atom.commands._commands[target]) {
+        states.push(disposed)
+      }
+    }
+    expect(states, 'to equal', [true])
   })
 })
