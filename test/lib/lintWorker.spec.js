@@ -99,4 +99,17 @@ describe('lib/lintWorker', () => {
       expect(message.error, 'to have property', 'message', 'err when linting')
     })
   })
+  it('should serialize errors', () => {
+    const child = childProcess.fork(workerPath, [require.resolve('../fixtures/stubForWorker/errOnLint')])
+    const promise = new Promise(resolve => {
+      child.on('message', m => resolve(m))
+    })
+
+    child.send({ id: 1, source: '' })
+
+    return promise.then((message) => {
+      expect(message.error, 'to have property', 'stack')
+      expect(message.error.stack, 'to contain', `${require.resolve('../fixtures/stubForWorker/errOnLint')}:2`)
+    })
+  })
 })
