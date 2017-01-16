@@ -43,18 +43,18 @@ describe('linter-js-standard-engine', () => {
     })
     return expect(lint(textEditor), 'to be fulfilled').then(data => expect(data, 'to be empty'))
   })
-  it('should clean linters when deactivated', () => {
-    let cleaned = false
+  it('should clear all caches when deactivated', () => {
+    let cleared = false
     const plugin = proxyquire('../../lib/register', {
-      './getLinter': {
-        cleanLinters () {
-          cleaned = true
+      './caches': {
+        clearAll () {
+          cleared = true
         }
       }
     })
 
-    expect(cleaned, 'to be false')
+    expect(cleared, 'to be false')
     plugin.deactivate()
-    expect(cleaned, 'to be true')
+    expect(cleared, 'to be true')
   })
 })
