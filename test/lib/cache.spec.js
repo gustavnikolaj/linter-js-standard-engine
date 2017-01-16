@@ -14,17 +14,26 @@ describe('lib/caches', () => {
 
   describe('clearAll()', () => {
     it('should reset added caches', () => {
-      let reset = false
-      const cache = {
+      let reset1 = false
+      let cleared2 = false
+      const cache1 = {
         reset () {
-          reset = true
+          reset1 = true
+        }
+      }
+      const cache2 = {
+        clear () {
+          cleared2 = true
         }
       }
 
-      expect(reset, 'to be', false)
-      caches.add(cache)
+      expect(reset1, 'to be', false)
+      expect(cleared2, 'to be', false)
+      caches.add(cache1)
+      caches.add(cache2)
       caches.clearAll()
-      expect(reset, 'to be', true)
+      expect(reset1, 'to be', true)
+      expect(cleared2, 'to be', true)
     })
   })
 })
