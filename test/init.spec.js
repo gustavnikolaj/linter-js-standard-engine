@@ -2,7 +2,7 @@
 /* global describe, it */
 
 const expect = require('unexpected').clone()
-const proxyquire = require('proxyquire')
+const proxyquire = require('proxyquire').noPreserveCache()
 const fs = require('fs')
 const path = require('path')
 const plugin = require('../init')
