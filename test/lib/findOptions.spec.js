@@ -46,14 +46,14 @@ describe('lib/findOptions', () => {
   })
   it('should not select a linter for a project with no linter', () => {
     const file = fixturesPath('noStandardEngine/index.js')
-    return expect(findOptions(file), 'to be rejected').then(msg => expect(msg, 'to satisfy', 'no supported linter found'))
+    return expect(findOptions(file), 'to be rejected').then(msg => expect(msg, 'to satisfy', 'No supported linter found'))
   })
   it('should fail when package.json cannot be found', () => {
     // Outside of this directory, presumably without a package.json from there to the filesystem root.
     const dir = uniqueTempDir({ create: true })
     const file = path.join(dir, 'file.js')
     return expect(findOptions(file), 'to be rejected').then(msg => {
-      return expect(msg, 'to satisfy', 'no package.json found')
+      return expect(msg, 'to satisfy', 'No package.json found')
     })
   })
 
