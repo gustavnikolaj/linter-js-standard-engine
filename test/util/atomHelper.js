@@ -31,8 +31,35 @@ if (typeof global.atom === 'undefined') {
       }
     },
 
+    config: {
+      _callbacks: new Map(),
+      _map: new Map(),
+
+      get (key) {
+        return this._map.get(key)
+      },
+
+      set (key, value) {
+        this._map.set(key, value)
+      },
+
+      onDidChange (key, callback) {
+        if (!this._callbacks.has(key)) {
+          this._callbacks.set(key, new Set())
+        }
+        const set = this._callbacks.get(key)
+        set.add(callback)
+        return {
+          dispose () {
+            set.delete(callback)
+          }
+        }
+      }
+    },
+
     notifications: {
       _errors: [],
+      _enableLinters: null,
 
       addError (message, options) {
         const obj = {
@@ -50,6 +77,43 @@ if (typeof global.atom === 'undefined') {
         return {
           onDidDismiss (callback) {
             obj._callbacks.add(callback)
+          }
+        }
+      },
+
+      addInfo (message, options) {
+        let obj
+
+        if (message === 'Enable linter?') {
+          if (this._enableLinters) {
+            obj = {
+              options,
+              _callbacks: new Set(),
+              _dismiss () {
+                for (const cb of this._callbacks) {
+                  cb()
+                }
+              }
+            }
+
+            this._enableLinters.push(obj)
+          } else {
+            setImmediate(() => {
+              (options.buttons[0].onDidClick)()
+            })
+          }
+        }
+
+        return {
+          dismiss () {
+            if (obj) {
+              obj._dismiss()
+            }
+          },
+          onDidDismiss (callback) {
+            if (obj) {
+              obj._callbacks.add(callback)
+            }
           }
         }
       }

@@ -7,7 +7,8 @@ const path = require('path')
 const expect = require('unexpected').clone()
 const proxyquire = require('proxyquire').noPreserveCache()
 
-const plugin = require('../../lib/register')
+const plugin = proxyquire('../../lib/register', {})
+
 const textEditorFactory = require('../util/textEditorFactory')
 
 const linter = plugin.provideLinter()
@@ -23,6 +24,8 @@ expect.addAssertion('to be a valid lint report', (expect, subject) => expect(sub
 }))
 
 describe('linter-js-standard-engine', () => {
+  plugin.activate()
+
   it('should be able to lint a test file', () => {
     const textEditor = textEditorFactory('var foo = "bar"')
     return expect(lint(textEditor), 'to be fulfilled').then(data => expect(data, 'to be a valid lint report'))
@@ -57,6 +60,7 @@ describe('linter-js-standard-engine', () => {
         }
       }
     })
+    plugin.activate()
 
     expect(cleared, 'to be false')
     plugin.deactivate()
@@ -120,5 +124,31 @@ describe('linter-js-standard-engine', () => {
 
     lint(textEditorFactory(''))
     expect(actual, 'to be', require('../../lib/reportError'))
+  })
+
+  it('should serialize the opt-in manager', () => {
+    const expected = { foo: 'bar' }
+    const { serialize } = proxyquire('../../lib/register', {
+      './optInManager': {
+        serialize: () => expected
+      }
+    })
+
+    expect(serialize(), 'to equal', { optIn: expected })
+  })
+
+  it('should activate the opt-in manager with serialized state', () => {
+    const expected = { foo: 'bar' }
+    let actual
+    const { activate } = proxyquire('../../lib/register', {
+      './optInManager': {
+        activate (state) {
+          actual = state
+        }
+      }
+    })
+
+    activate({ optIn: expected })
+    expect(actual, 'to be', expected)
   })
 })
