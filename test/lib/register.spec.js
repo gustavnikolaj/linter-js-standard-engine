@@ -96,9 +96,11 @@ describe('linter-js-standard-engine', () => {
   it('should provide an error reporter when linting', () => {
     let actual
     const { lint } = proxyquire('../../lib/register', {
-      './lint' (textEditor, reportError) {
-        actual = reportError
-        return new Promise(() => {})
+      './linting': {
+        lint (textEditor, reportError) {
+          actual = reportError
+          return new Promise(() => {})
+        }
       }
     }).provideLinter()
 
