@@ -4,9 +4,9 @@ const expect = require('unexpected')
 const childProcess = require('child_process')
 const path = require('path')
 
-const workerPath = require.resolve('../../lib/lintWorker')
+const workerPath = require.resolve('../../lib/worker')
 
-describe('lib/lintWorker', () => {
+describe('lib/worker', () => {
   it('should only load linter once', () => {
     const child = childProcess.fork(workerPath, [require.resolve('../fixtures/stubForWorker')])
     const messages = []
