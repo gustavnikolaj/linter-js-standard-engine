@@ -18,6 +18,7 @@
   "scripts": {
     "lint": "standard",
     "test": "mocha",
+    "posttest": "standard",
     "coverage": "nyc npm test"
   },
   "homepage": "https://github.com/gustavnikolaj/linter-js-standard-engine#readme",
