@@ -6,13 +6,15 @@ const proxyquire = require('proxyquire').noPreserveCache()
 const textEditorFactory = require('../util/textEditorFactory')
 const { MissingLinterError, MissingPackageError } = require('../../lib/findOptions')
 
-describe('lib/lint.js', () => {
+describe('lib/linting', () => {
   let stub
-  const lint = proxyquire('../../lib/lint', {
-    './getLinter' () {
-      return {
-        lintText (...args) {
-          return stub(...args)
+  const linting = proxyquire('../../lib/linting', {
+    './workerManagement': {
+      getWorker () {
+        return {
+          lint (...args) {
+            return stub(...args)
+          }
         }
       }
     }
@@ -67,7 +69,7 @@ describe('lib/lint.js', () => {
       source: 'var foo = "bar"',
       path: filePath
     })
-    return expect(lint(textEditor), 'to be fulfilled').then(report => expect(report, 'to equal', [
+    return expect(linting.lint(textEditor), 'to be fulfilled').then(report => expect(report, 'to equal', [
       {
         type: 'Warning',
         text: 'Newline required at end of file but not found.',
@@ -97,7 +99,7 @@ describe('lib/lint.js', () => {
 
   describe('error handling', () => {
     let currentError
-    const stubbedOptions = proxyquire('../../lib/lint', {
+    const stubbedOptions = proxyquire('../../lib/linting', {
       './findOptions' () {
         return Promise.reject(currentError)
       }
@@ -109,14 +111,14 @@ describe('lib/lint.js', () => {
     for (const ErrorClass of [MissingLinterError, MissingPackageError]) {
       it(`should suppress "${ErrorClass.name}" errors`, () => {
         currentError = new ErrorClass()
-        return expect(stubbedOptions(textEditorFactory('')), 'to be fulfilled').then(data => expect(data, 'to be empty'))
+        return expect(stubbedOptions.lint(textEditorFactory('')), 'to be fulfilled').then(data => expect(data, 'to be empty'))
       })
     }
 
     it('should report errors that are not suppressed', () => {
       currentError = new Error('do not suppress me')
       stub = () => Promise.reject(currentError)
-      return expect(lint(textEditorFactory(''), reportError), 'to be fulfilled').then(data => {
+      return expect(linting.lint(textEditorFactory(''), reportError), 'to be fulfilled').then(data => {
         expect(data, 'to be empty')
         expect(reportedError, 'to be', currentError)
       })
@@ -124,7 +126,7 @@ describe('lib/lint.js', () => {
     it('should add errors that are not suppressed with a default description', () => {
       currentError = new Error('')
       stub = () => Promise.reject(currentError)
-      return expect(lint(textEditorFactory(''), reportError), 'to be fulfilled').then(data => {
+      return expect(linting.lint(textEditorFactory(''), reportError), 'to be fulfilled').then(data => {
         expect(data, 'to be empty')
         expect(reportedError, 'to be', currentError)
       })
@@ -135,7 +137,7 @@ describe('lib/lint.js', () => {
     stub = () => Promise.resolve([])
     let reportedError
     const reportError = err => { reportedError = err }
-    return expect(lint(textEditorFactory(''), reportError), 'to be fulfilled').then(data => {
+    return expect(linting.lint(textEditorFactory(''), reportError), 'to be fulfilled').then(data => {
       expect(data, 'to be empty')
       expect(reportedError, 'to have message', 'Invalid lint report')
     })

@@ -23,7 +23,7 @@ class Child extends EventEmitter {
   }
 }
 
-const getLinter = proxyquire('../../lib/getLinter', {
+const workerManagement = proxyquire('../../lib/workerManagement', {
   'child_process': {
     fork (workerPath, args, opts) {
       const name = args[0]
@@ -34,10 +34,10 @@ const getLinter = proxyquire('../../lib/getLinter', {
   }
 })
 
-describe('lib/getLinter', () => {
+describe('lib/workerManagement', () => {
   it('should shut down least recently used workers', () => {
-    getLinter('first', '/')
-    getLinter('second', '/')
+    workerManagement.getWorker('first', '/')
+    workerManagement.getWorker('second', '/')
     expect(forks, 'to satisfy', {
       first: {
         wasDisconnected: false
@@ -47,7 +47,7 @@ describe('lib/getLinter', () => {
       }
     })
 
-    getLinter('third', '/')
+    workerManagement.getWorker('third', '/')
     expect(forks, 'to have key', 'third')
     expect(forks, 'to satisfy', {
       first: {
@@ -61,50 +61,50 @@ describe('lib/getLinter', () => {
       }
     })
   })
-  it('should forward errors to the lintText() promise', () => {
-    const linter = getLinter('linter', '/')
+  it('should forward errors to the lint() promise', () => {
+    const worker = workerManagement.getWorker('linter', '/')
     const expected = 'error'
     forks.linter.on('send', cmd => {
       forks.linter.emit('message', { id: cmd.id, error: { message: expected } })
     })
 
-    return expect(linter.lintText('', {}), 'to be rejected').then(actual => {
+    return expect(worker.lint('', {}), 'to be rejected').then(actual => {
       expect(actual, 'to be a', Error)
       expect(actual, 'to have message', expected)
     })
   })
   it('should ignore unexpected messages from the worker', () => {
-    getLinter('linter', '/')
+    workerManagement.getWorker('linter', '/')
     forks.linter.emit('message', { id: 10 })
   })
   it('should clean up linters that exit', () => {
-    const foo = getLinter('first', '/')
-    expect(getLinter('first', '/'), 'to be', foo)
+    const foo = workerManagement.getWorker('first', '/')
+    expect(workerManagement.getWorker('first', '/'), 'to be', foo)
     forks.first.emit('exit')
     return new Promise(resolve => setTimeout(resolve, 10))
       .then(() => {
-        const bar = getLinter('first', '/')
+        const bar = workerManagement.getWorker('first', '/')
         expect(bar, 'not to be', foo)
 
         // Ensure first is purged from the cache
-        getLinter('second', '/')
-        getLinter('third', '/')
+        workerManagement.getWorker('second', '/')
+        workerManagement.getWorker('third', '/')
 
         const child = forks.first
         expect(child, 'to have property', 'wasDisconnected', true)
-        const baz = getLinter('first', '/')
+        const baz = workerManagement.getWorker('first', '/')
 
         child.emit('exit')
         return new Promise(resolve => setTimeout(resolve, 10))
         .then(() => {
-          expect(getLinter('first', '/'), 'to be', baz)
+          expect(workerManagement.getWorker('first', '/'), 'to be', baz)
         })
       })
   })
   it('should ignore disconnect errors', () => {
-    const linter = getLinter('first', '/')
+    const worker = workerManagement.getWorker('first', '/')
     forks.first.disconnect = () => { throw new Error('ignore me') }
-    expect(() => linter.shutdown(), 'not to throw')
+    expect(() => worker.dispose(), 'not to throw')
   })
 
   describe('clearing all caches', () => {
@@ -112,8 +112,8 @@ describe('lib/getLinter', () => {
       // Reset state
       caches.clearAll()
 
-      getLinter('first', '/')
-      getLinter('second', '/')
+      workerManagement.getWorker('first', '/')
+      workerManagement.getWorker('second', '/')
       expect(forks, 'to satisfy', {
         first: {
           wasDisconnected: false
