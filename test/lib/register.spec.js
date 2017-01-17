@@ -72,6 +72,18 @@ describe('linter-js-standard-engine', () => {
       disposed: false
     })
   })
+  it('should register a fix command', () => {
+    atom.commands._commands = []
+    proxyquire('../../lib/register', {})
+    const commands = require('../../lib/commands')
+
+    expect(atom.commands._commands, 'to have key', 'atom-workspace')
+    expect(atom.commands._commands['atom-workspace'], 'to contain', {
+      name: 'Standard Engine:Fix File',
+      callback: commands['Standard Engine:Fix File'],
+      disposed: false
+    })
+  })
   it('should dispose commands when deactivated', () => {
     atom.commands._commands = []
     const plugin = proxyquire('../../lib/register', {})
@@ -82,7 +94,7 @@ describe('linter-js-standard-engine', () => {
         states.push(disposed)
       }
     }
-    expect(states, 'to equal', [false])
+    expect(states, 'to equal', [false, false])
 
     plugin.deactivate()
     states = []
@@ -91,7 +103,7 @@ describe('linter-js-standard-engine', () => {
         states.push(disposed)
       }
     }
-    expect(states, 'to equal', [true])
+    expect(states, 'to equal', [true, true])
   })
   it('should provide an error reporter when linting', () => {
     let actual

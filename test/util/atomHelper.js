@@ -53,6 +53,14 @@ if (typeof global.atom === 'undefined') {
           }
         }
       }
+    },
+
+    workspace: {
+      _activeTextEditor: null,
+
+      getActiveTextEditor () {
+        return this._activeTextEditor
+      }
     }
   }
 }
