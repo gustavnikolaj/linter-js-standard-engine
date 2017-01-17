@@ -1,4 +1,4 @@
-/* global describe, it */
+/* global describe, it, beforeEach */
 
 const path = require('path')
 const expect = require('unexpected').clone()
@@ -7,8 +7,14 @@ const textEditorFactory = require('../util/textEditorFactory')
 const { MissingLinterError, MissingPackageError } = require('../../lib/findOptions')
 
 describe('lib/linting', () => {
+  const optInManager = proxyquire('../../lib/optInManager', {})
+  optInManager.activate()
+  let hasPermission = true
+  optInManager.checkPermission = () => Promise.resolve(hasPermission)
+
   let stub
   const linting = proxyquire('../../lib/linting', {
+    './optInManager': optInManager,
     './workerManagement': {
       getWorker () {
         return {
@@ -21,6 +27,11 @@ describe('lib/linting', () => {
         }
       }
     }
+  })
+
+  beforeEach(() => {
+    hasPermission = true
+    stub = undefined
   })
 
   describe('lint()', () => {
@@ -134,6 +145,35 @@ describe('lib/linting', () => {
           source: 'var foo = "bar"',
           path: filePath
         })
+        return expect(linting[method](textEditor), 'to be fulfilled')
+          .then(output => expect(output, `to be ${emptiness}`))
+      })
+
+      it(`should return ${returnDescription} if there is no permission for the linter to run`, () => {
+        const filePath = path.resolve(__dirname, '..', 'fixtures', 'file.js')
+        const textEditor = textEditorFactory({
+          source: 'var foo = "bar"',
+          path: filePath
+        })
+        hasPermission = false
+        stub = () => Promise.resolve([
+          {
+            filePath,
+            messages: [
+              {
+                ruleId: 'eol-last',
+                severity: 2,
+                message: 'Newline required at end of file but not found.',
+                line: 1,
+                column: 2,
+                nodeType: 'Program',
+                source: 'var foo = "bar"',
+                fix: { range: [15, 15], text: '\n' }
+              }
+            ],
+            output: 'fixed'
+          }
+        ])
         return expect(linting[method](textEditor), 'to be fulfilled')
           .then(output => expect(output, `to be ${emptiness}`))
       })
