@@ -41,7 +41,7 @@ describe('lib/linting', () => {
             },
             {
               ruleId: 'no-unused-vars',
-              severity: 2,
+              severity: 1,
               message: '"foo" is defined but never used',
               line: 1,
               column: 5,
@@ -59,7 +59,7 @@ describe('lib/linting', () => {
               fix: { range: [10, 15], text: "'bar'" }
             },
             {
-              fatal: true,
+              severity: 2,
               message: 'Made up message to test fallback code paths'
             }
           ],
@@ -75,7 +75,7 @@ describe('lib/linting', () => {
       })
       return expect(linting.lint(textEditor), 'to be fulfilled').then(report => expect(report, 'to equal', [
         {
-          type: 'Warning',
+          type: 'Error',
           text: 'Newline required at end of file but not found.',
           filePath,
           range: [ [ 0, 0 ], [ 0, 1 ] ]
@@ -87,7 +87,7 @@ describe('lib/linting', () => {
           range: [ [ 0, 1 ], [ 0, 4 ] ]
         },
         {
-          type: 'Warning',
+          type: 'Error',
           text: 'Strings must use singlequote.',
           filePath,
           range: [ [ 0, 1 ], [ 0, 10 ] ]
