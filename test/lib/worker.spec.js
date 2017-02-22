@@ -113,3 +113,68 @@ describe('lib/worker', () => {
     })
   })
 })
+
+describe('handle both async and sync lintText', () => {
+  describe('sync', () => {
+    it('should get a lint result', () => {
+      const child = childProcess.fork(workerPath, [require.resolve('../fixtures/stubForWorker/lintText-sync')])
+      const promise = new Promise(resolve => {
+        child.on('message', m => resolve(m))
+      })
+
+      child.send({ id: 1, source: '' })
+
+      return expect(promise, 'when fulfilled', 'to satisfy', {
+        id: 1,
+        results: []
+      })
+    })
+    it('should get a lint error', () => {
+      const child = childProcess.fork(workerPath, [require.resolve('../fixtures/stubForWorker/errOnLint-sync')])
+      const promise = new Promise(resolve => {
+        child.on('message', m => resolve(m))
+      })
+
+      child.send({ id: 1, source: '' })
+
+      return expect(promise, 'when fulfilled', 'to satisfy', {
+        id: 1,
+        error: {
+          name: 'Error',
+          message: 'err when linting'
+        }
+      })
+    })
+  })
+  describe('async', () => {
+    it('should get a lint result', () => {
+      const child = childProcess.fork(workerPath, [require.resolve('../fixtures/stubForWorker/lintText-async')])
+      const promise = new Promise(resolve => {
+        child.on('message', m => resolve(m))
+      })
+
+      child.send({ id: 1, source: '' })
+
+      return expect(promise, 'when fulfilled', 'to satisfy', {
+        id: 1,
+        results: []
+      })
+    })
+    it('should get a lint error', () => {
+      const child = childProcess.fork(workerPath, [require.resolve('../fixtures/stubForWorker/errOnLint')])
+      const promise = new Promise(resolve => {
+        child.on('message', m => resolve(m))
+      })
+
+      child.send({ id: 1, source: '' })
+
+      return expect(promise, 'when fulfilled', 'to satisfy', {
+        id: 1,
+        error: {
+          name: 'Error',
+          message: 'err when linting'
+        }
+      })
+    })
+  })
+})
