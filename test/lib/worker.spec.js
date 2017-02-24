@@ -199,7 +199,7 @@ describe('handle both async and sync lintText', () => {
     child.send({ id: 1, source: '' })
 
     return expect(promise, 'when fulfilled to equal', [
-      { id: 1, results: [] }
+      { id: 1, results: [ { callback: false } ] }
     ])
   })
 })
