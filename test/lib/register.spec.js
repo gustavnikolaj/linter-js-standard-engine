@@ -14,10 +14,12 @@ const linter = plugin.provideLinter()
 const lint = linter.lint.bind(linter)
 
 expect.addAssertion('to be a valid lint report', (expect, subject) => expect(subject, 'to have items satisfying', {
-  type: expect.it('to be a string').and('not to be empty'),
-  text: expect.it('to be a string').and('not to be empty'),
-  filePath: expect.it('to be a string').and('to match', /\.js$/),
-  range: expect.it('to have items satisfying', 'to have items satisfying', 'to be a number')
+  severity: expect.it('to be a string').and('not to be empty').and('to match', /^[a-z]+$/),
+  excerpt: expect.it('to be a string').and('not to be empty'),
+  location: expect.it('to exhaustively satisfy', {
+    file: expect.it('to be a string').and('to match', /\.js$/),
+    position: expect.it('to have items satisfying', 'to have items satisfying', 'to be a number')
+  })
 }))
 
 describe('linter-js-standard-engine', () => {

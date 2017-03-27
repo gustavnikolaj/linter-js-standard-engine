@@ -75,28 +75,36 @@ describe('lib/linting', () => {
       })
       return expect(linting.lint(textEditor), 'to be fulfilled').then(report => expect(report, 'to equal', [
         {
-          type: 'Error',
-          text: 'Newline required at end of file but not found.',
-          filePath,
-          range: [ [ 0, 0 ], [ 0, 1 ] ]
+          severity: 'error',
+          excerpt: 'Newline required at end of file but not found.',
+          location: {
+            file: filePath,
+            position: [ [ 0, 0 ], [ 0, 1 ] ]
+          }
         },
         {
-          type: 'Warning',
-          text: '"foo" is defined but never used',
-          filePath,
-          range: [ [ 0, 1 ], [ 0, 4 ] ]
+          severity: 'warning',
+          excerpt: '"foo" is defined but never used',
+          location: {
+            file: filePath,
+            position: [ [ 0, 1 ], [ 0, 4 ] ]
+          }
         },
         {
-          type: 'Error',
-          text: 'Strings must use singlequote.',
-          filePath,
-          range: [ [ 0, 1 ], [ 0, 10 ] ]
+          severity: 'error',
+          excerpt: 'Strings must use singlequote.',
+          location: {
+            file: filePath,
+            position: [ [ 0, 1 ], [ 0, 10 ] ]
+          }
         },
         {
-          type: 'Error',
-          text: 'Made up message to test fallback code paths',
-          filePath,
-          range: [ [ 0, 0 ], [ 0, 0 ] ]
+          severity: 'error',
+          excerpt: 'Made up message to test fallback code paths',
+          location: {
+            file: filePath,
+            position: [ [ 0, 0 ], [ 0, 0 ] ]
+          }
         }
       ]))
     })
