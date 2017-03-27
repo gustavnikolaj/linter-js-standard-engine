@@ -80,7 +80,13 @@ describe('lib/linting', () => {
           location: {
             file: filePath,
             position: [ [ 0, 0 ], [ 0, 1 ] ]
-          }
+          },
+          solutions: [
+            {
+              position: [ [ 0, 0 ], [ 0, 0 ] ], // Mocked out position calculation...
+              replaceWith: '\n'
+            }
+          ]
         },
         {
           severity: 'warning',
@@ -96,7 +102,13 @@ describe('lib/linting', () => {
           location: {
             file: filePath,
             position: [ [ 0, 1 ], [ 0, 10 ] ]
-          }
+          },
+          solutions: [
+            {
+              position: [ [ 0, 0 ], [ 0, 0 ] ], // Mocked out position calculation...
+              replaceWith: '\'bar\''
+            }
+          ]
         },
         {
           severity: 'error',
