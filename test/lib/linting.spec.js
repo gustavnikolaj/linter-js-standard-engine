@@ -120,24 +120,24 @@ describe('lib/linting', () => {
       return expect(linting.fix(textEditor), 'to be fulfilled')
         .then(output => expect(output, 'to equal', 'fixed'))
     })
-
-    it('should return null if the file is ignored', () => {
-      stub = () => Promise.reject(new Error('Should never be called'))
-      const filePath = path.resolve(__dirname, '..', 'fixtures', 'scopedLinter', 'world')
-      const textEditor = textEditorFactory({
-        source: 'var foo = "bar"',
-        path: filePath
-      })
-      return expect(linting.fix(textEditor), 'to be fulfilled')
-        .then(output => expect(output, 'to be null'))
-    })
   })
 
-  for (const { method, emptiness } of [
-    { method: 'fix', emptiness: 'null' },
-    { method: 'lint', emptiness: 'empty' }
+  for (const { method, emptiness, returnDescription } of [
+    { method: 'fix', emptiness: 'null', returnDescription: 'null' },
+    { method: 'lint', emptiness: 'empty', returnDescription: 'an empty array' }
   ]) {
     describe(`${method}()`, () => {
+      it(`should return ${returnDescription} if the file is ignored`, () => {
+        stub = () => Promise.reject(new Error('Should never be called'))
+        const filePath = path.resolve(__dirname, '..', 'fixtures', 'scopedLinter', 'world')
+        const textEditor = textEditorFactory({
+          source: 'var foo = "bar"',
+          path: filePath
+        })
+        return expect(linting[method](textEditor), 'to be fulfilled')
+          .then(output => expect(output, `to be ${emptiness}`))
+      })
+
       describe('error handling', () => {
         let currentError
         const stubbedOptions = proxyquire('../../lib/linting', {
