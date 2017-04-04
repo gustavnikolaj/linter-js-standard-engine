@@ -17,7 +17,7 @@
   ],
   "scripts": {
     "lint": "standard",
-    "test": "mocha",
+    "test": "mocha test/**/*.spec.js",
     "posttest": "standard",
     "coverage": "nyc npm test"
   },
