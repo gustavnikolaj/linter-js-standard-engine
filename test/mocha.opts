@@ -1,4 +1,3 @@
 --recursive
 --reporter spec
 --require test/util/atomHelper
-test/**/*.spec.js
