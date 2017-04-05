@@ -1,3 +1,3 @@
-exports.lintText = (source, opts) => {
+exports.lintTextSync = (source, opts) => {
   return { results: [] }
 }

@@ -177,29 +177,4 @@ describe('handle both async and sync lintText', () => {
       })
     })
   })
-  it('should protect against faulty standard-engine implementations', () => {
-    /* This test is supposed to guard verify that a faulty lintText implementation
-     * is not going to trigger two messages. It is a bit brittle, as I have to rely
-     * on a timeout being queued after receiving the first message, to check that
-     * no other messages are received at a later point.
-     */
-    const child = childProcess.fork(workerPath, [require.resolve('../fixtures/stubForWorker/lintText-faulty')])
-    let calls = []
-    let calledOnce = false
-    const promise = new Promise(resolve => {
-      child.on('message', m => {
-        calls.push(m)
-        if (!calledOnce) {
-          calledOnce = true
-          setTimeout(() => resolve(calls), 100)
-        }
-      })
-    })
-
-    child.send({ id: 1, source: '' })
-
-    return expect(promise, 'when fulfilled to equal', [
-      { id: 1, results: [ { callback: false } ] }
-    ])
-  })
 })
