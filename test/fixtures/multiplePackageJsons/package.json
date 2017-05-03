@@ -1,0 +1,7 @@
+{
+  "name": "some-module",
+  "devDependencies": {
+    "standard": "*"
+  },
+  "standard-engine": "my-linter"
+}
