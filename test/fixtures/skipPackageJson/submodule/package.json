@@ -1,6 +1,6 @@
 {
   "name": "this-is-a-submodule-with-package-json",
-  "standard": {
+  "standard-engine": {
     "skipPackageJson": true
   }
 }
