@@ -3,5 +3,7 @@
   "devDependencies": {
     "standard": "*"
   },
-  "standard-engine": "my-linter"
+  "standard-engine": {
+    "name": "my-linter"
+  }
 }
