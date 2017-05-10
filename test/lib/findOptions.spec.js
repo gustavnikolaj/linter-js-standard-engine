@@ -56,6 +56,14 @@ describe('lib/findOptions', () => {
       return expect(msg, 'to satisfy', 'No package.json found')
     })
   })
+  it('should walk up the tree if a package.json is found stating it\'s not the projects root', () => {
+    const file = fixturesPath('skip/submodule/index.js')
+    return expect(findOptions(file), 'to be fulfilled').then(options => expect(options, 'to equal', {
+      projectRoot: fixturesPath('skip'),
+      linterName: 'my-linter',
+      ignoreGlobs: []
+    }))
+  })
 
   describe('caching', () => {
     const findCwds = []
