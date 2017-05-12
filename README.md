@@ -60,7 +60,8 @@ used. The linter is invoked with its working directory set to the directory the
 `package.json` file is in. The `package.json` file's location and contents are
 cached.
 
-If you have a project setup with multiple `package.json` files you can tell `linter-js-standard-engine` to ignore nested `package.json` files and keep
+If you have a project setup with multiple `package.json` files you can tell
+`linter-js-standard-engine` to ignore nested `package.json` files and keep
 walking up the file system:
 
 ```json
