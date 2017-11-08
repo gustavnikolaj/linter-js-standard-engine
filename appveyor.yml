@@ -1,14 +1,21 @@
+build: off
+cache:
+  - '%APPDATA%\npm-cache'
+clone_depth: 1
+skip_branch_with_pr: true
+skip_commits:
+  files:
+    - '**/*.md'
+configuration:
+  - FreshDeps
+  - LockedDeps
 environment:
-  nodejs_version: "6.3.0"
-
+  nodejs_version: "7.4.0"
 install:
   - ps: Install-Product node $env:nodejs_version
-  - npm install
-
-test_script:
-  - node --version
+  - npm install --global npm@5.5.1
   - npm --version
+  - if %configuration% == FreshDeps (npm install --no-shrinkwrap --prefer-online)
+  - if %configuration% == LockedDeps (npm install --prefer-offline)
+test_script:
   - npm run coverage
-
-# Don't actually build.
-build: off
