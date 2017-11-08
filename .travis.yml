@@ -1,8 +1,17 @@
 language: node_js
-sudo: false
 node_js:
-  - "6.3.0" # Ships with Atom 1.12.0
-script:
-  - npm run coverage
+  - "7.4.0" # Ships with Atom 1.22.0
+env:
+  - FRESH_DEPS=false
+  - FRESH_DEPS=true
+cache:
+  directories:
+    - $HOME/.npm
+before_install:
+  - npm install --global npm@5.5.1
+  - npm --version
+install:
+  - if [[ ${FRESH_DEPS} == "true" ]]; then npm install --no-shrinkwrap --prefer-online; else npm install --prefer-offline; fi
+script: npm run coverage
 after_script:
   - "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls"
