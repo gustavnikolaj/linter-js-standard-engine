@@ -36,7 +36,7 @@ if (typeof global.atom === 'undefined') {
       _map: new Map(),
 
       get (key) {
-        if (key === 'linter-js-standard-engine.grammarScopes') return ['source.js', 'source.js.jsx']
+        if (key === 'linter-js-standard-engine.grammarScopes') return ['javascript', 'source.js', 'source.js.jsx']
         return this._map.get(key)
       },
 
