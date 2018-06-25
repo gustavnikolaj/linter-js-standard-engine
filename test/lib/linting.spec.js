@@ -1,10 +1,12 @@
 /* global describe, it, beforeEach */
 
 const path = require('path')
+const fs = require('fs')
 const expect = require('unexpected').clone()
 const proxyquire = require('proxyquire').noPreserveCache()
 const textEditorFactory = require('../util/textEditorFactory')
 const { MissingLinterError, MissingPackageError } = require('../../lib/findOptions')
+const { fileIsIgnored } = require('../../lib/linting')
 
 describe('lib/linting', () => {
   const optInManager = proxyquire('../../lib/optInManager', {})
@@ -131,6 +133,33 @@ describe('lib/linting', () => {
         }
       ]))
     })
+    it('should not lint an ignored file', () => {
+      const filePath = path.resolve(__dirname, '..', 'fixtures', 'misc/should-not-be-linted/index.js')
+      const textEditor = textEditorFactory({
+        source: fs.readFileSync(filePath, 'utf-8'),
+        path: filePath
+      })
+      const reportedErrors = []
+      const reportError = err => reportedErrors.push(err)
+
+      return expect(linting.lint(textEditor, reportError), 'to be fulfilled').then(report => {
+        expect(report, 'to equal', [])
+      })
+    })
+
+    it('should not lint an ignored file', () => {
+      const filePath = path.resolve(__dirname, '..', 'fixtures', 'misc/should-be-linted/index.js')
+      const textEditor = textEditorFactory({
+        source: fs.readFileSync(filePath, 'utf-8'),
+        path: filePath
+      })
+      const reportedErrors = []
+      const reportError = err => reportedErrors.push(err)
+
+      return expect(linting.lint(textEditor, reportError), 'to be fulfilled').then(report => {
+        expect(report, 'to equal', [])
+      })
+    })
   })
 
   describe('fix()', () => {
@@ -246,4 +275,19 @@ describe('lib/linting', () => {
       })
     })
   }
+})
+
+describe('fileIsIgnored', () => {
+  const testCases = [
+    { filePath: '/foo/should-not-be-linted/index.js', projectRoot: '/foo', ignoreGlobs: [ 'should-not-be-linted' ], ignored: true },
+    { filePath: '/foo/should-be-linted/index.js', projectRoot: '/foo', ignoreGlobs: [ 'should-not-be-linted' ], ignored: false },
+    { filePath: '/foo/bar/qux.js', projectRoot: '/foo', ignoreGlobs: [ 'bar' ], ignored: true }
+  ]
+
+  testCases.forEach(({ filePath, projectRoot, ignoreGlobs, ignored }) => {
+    it(`should ${ignored ? 'ignore' : 'not ignore'} ${filePath} in ${projectRoot} with globs ${JSON.stringify(ignoreGlobs)}`, () => {
+      console.log('foo', filePath, projectRoot, ignoreGlobs)
+      expect(fileIsIgnored(filePath, projectRoot, ignoreGlobs), 'to be', ignored)
+    })
+  })
 })

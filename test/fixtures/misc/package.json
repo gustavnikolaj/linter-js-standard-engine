@@ -1,0 +1,19 @@
+{
+  "name": "misc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "lint": "standard | snazzy",
+    "test": "npm run lint --silent"
+  },
+  "devDependencies": {
+    "snazzy": "^7.0.0",
+    "standard": "^10.0.2"
+  },
+  "standard": {
+    "ignore": [
+      "should-not-be-linted"
+    ]
+  }
+}
